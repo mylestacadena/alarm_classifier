@@ -1,1 +1,3 @@
-# alarm_classifier
+streamlit
+pandas
+numpy
