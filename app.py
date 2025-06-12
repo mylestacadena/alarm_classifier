@@ -40,19 +40,9 @@ with st.sidebar:
             "Home",
             "Upload Audio File",
             "Use Microphone",
-            "Dashboard",
-            "All Courses",
-            "Messages",
-            "Friends",
-            "Schedule",
-            "Settings",
-            "Directory"
         ],
         icons=[
-            "house", "file-earmark-arrow-down", "mic",
-            "speedometer", "book", "envelope", "people",
-            "calendar", "gear", "folder"
-        ],
+            "house", "file-earmark-arrow-down", "mic"],
         menu_icon="cast",
         default_index=0,
         orientation="vertical",
@@ -137,7 +127,11 @@ label_encoder = joblib.load("label_encoder.pkl")
 
 # === Feature Extraction ===
 def extract_features(file_path):
-    y, sr = librosa.load(file_path, sr=16000)
+    y, sr = librosa.load(file_path, sr=None)  # Load at original sample rate
+    if sr != 16000:
+        st.warning("Resampling to 16kHz for processing.")
+        y = librosa.resample(y, orig_sr=sr, target_sr=16000)
+        sr = 16000
     mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
     spectral_centroid = librosa.feature.spectral_centroid(y=y, sr=sr)
     spectral_rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr)
@@ -173,6 +167,8 @@ elif selected_page == "Upload Audio File":
             temp_path = tmp_file.name
 
         try:
+            duration = librosa.get_duration(filename=temp_path)
+            st.write(f"Audio Duration: {round(duration, 2)} seconds")
             with st.spinner("Analyzing audio..."):
                 features = extract_features(temp_path)
                 prediction = model.predict(features)
@@ -231,6 +227,8 @@ elif selected_page == "Use Microphone":
                 temp_path = "mic_input.wav"
                 sf.write(temp_path, audio_data, 16000)
                 try:
+                    duration = librosa.get_duration(filename=temp_path)
+                    st.write(f"Audio Duration: {round(duration, 2)} seconds")
                     with st.spinner("Analyzing audio..."):
                         features = extract_features(temp_path)
                         prediction = model.predict(features)
