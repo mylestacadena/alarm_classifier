@@ -162,9 +162,6 @@ elif selected_page == "Upload Audio File":
             temp_path = tmp_file.name
 
         try:
-            duration = librosa.get_duration(filename=temp_path)
-            st.write(f"Audio Duration: {round(duration, 2)} seconds")
-
             with st.spinner("Analyzing audio..."):
                 features = extract_features(temp_path)
                 
@@ -173,34 +170,40 @@ elif selected_page == "Upload Audio File":
                 prediction = model.predict(features)
                 label = label_encoder.inverse_transform(prediction)[0]
 
-                # === Display Main Prediction and Confidence ===
-                confidence = np.max(probabilities) * 100
-                st.success(f"Predicted Sound: **{label}**")
-                st.info(f"Model Confidence: **{confidence:.2f}%**")
-
-                # === Display Top 3 Predictions ===
-                top_n = 3
-                top_indices = np.argsort(probabilities[0])[::-1][:top_n]
-                st.markdown("**Top 3 Predictions:**")
-                for i in top_indices:
-                    pred_label = label_encoder.inverse_transform([i])[0]
-                    prob = probabilities[0][i] * 100
-                    st.write(f"• {pred_label}: {prob:.2f}%")
+                duration = librosa.get_duration(filename=temp_path)
+                st.write(f"Audio Duration: {round(duration, 2)} seconds")
 
                 # === Load audio and generate spectrogram ===
                 y, sr = librosa.load(temp_path, sr=16000)
 
-                # === Display Raw Waveform ===
-                st.markdown("### 📈 Raw Audio Waveform")
-                fig_wave, ax_wave = plt.subplots()
-                librosa.display.waveshow(y, sr=sr, ax=ax_wave)
-                ax_wave.set_title('Waveform')
-                ax_wave.set_xlabel('Time (s)')
-                ax_wave.set_ylabel('Amplitude')
-                st.pyplot(fig_wave)
+                # === Display Interactive Raw Waveform ===
+                st.markdown("### 📈 Raw Audio Waveform (Interactive)")
+                
+                # Generate time axis for the waveform
+                time_axis = np.linspace(0, len(y) / sr, num=len(y))
+                
+                # Create interactive plot with Plotly
+                fig_wave_interactive = go.Figure()
+                fig_wave_interactive.add_trace(go.Scatter(
+                    x=time_axis,
+                    y=y,
+                    mode='lines',
+                    name='Waveform',
+                    line=dict(color='royalblue')
+                ))
+                
+                fig_wave_interactive.update_layout(
+                    title='Interactive Audio Waveform',
+                    xaxis_title='Time (s)',
+                    yaxis_title='Amplitude',
+                    showlegend=False,
+                    margin=dict(l=40, r=40, t=40, b=40)
+                )
+                
+                st.plotly_chart(fig_wave_interactive, use_container_width=True)
 
                 # === Spectrogram ===
-                st.markdown("### 🔊 Spectrogram View")
+                st.markdown("### Spectrogram")
                 D = librosa.amplitude_to_db(np.abs(librosa.stft(y)), ref=np.max)
                 fig_spec = go.Figure(data=go.Heatmap(z=D, colorscale='Viridis'))
                 fig_spec.update_layout(title="Spectrogram", xaxis_title="Time", yaxis_title="Frequency (Hz)")
