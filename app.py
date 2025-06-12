@@ -100,10 +100,11 @@ def extract_features(file_path):
 
 # === UI Title ===
 
-tab1, tab2 = st.tabs(["📁 Upload Audio File", "🎤 Use Microphone"])
+tab1, tab2 = st.tabs(["Upload Audio File", "Use Microphone"])
 
 # === File Upload Tab ===
 with tab1:
+    st.markdown("_Upload a .wav file and see its predicted alarm type with visual analysis._")
     uploaded_file = st.file_uploader("Upload a .wav file", type=["wav"])
 
     if uploaded_file:
@@ -121,7 +122,7 @@ with tab1:
 
                 # Display Prediction Result
                 st.markdown('<div class="result-box">', unsafe_allow_html=True)
-                st.success(f"🎯 Predicted Sound: **{label}**")
+                st.success(f"Predicted Sound: **{label}**")
                 st.markdown('</div>', unsafe_allow_html=True)
 
                 # Load audio for visualization
@@ -137,7 +138,7 @@ with tab1:
                     colorbar=dict(title='dB'),
                 ))
                 fig.update_layout(
-                    title="🔊 Spectrogram View",
+                    title="Spectrogram View",
                     xaxis_title="Time",
                     yaxis_title="Frequency (log)",
                     height=400
@@ -145,12 +146,22 @@ with tab1:
                 st.plotly_chart(fig, use_container_width=True)
 
         except Exception as e:
-            st.error(f"❌ Error processing file: {e}")
+            st.error(f"Error processing file: {e}")
 
-
+    # === 🔁 Sound Comparison Section ===
+    st.markdown("### 🔁 Compare with Sample Alarms")
+    if st.checkbox("Enable Sample Comparison"):
+        sample_choice = st.selectbox("Choose a sample sound", ["Fire Alarm", "Car Horn", "Dog Bark"])
+        sample_path = f"samples/{sample_choice}.wav"
+        if os.path.exists(sample_path):
+            st.audio(sample_path, format="audio/wav")
+        else:
+            st.warning("Sample file not found. Please check your samples directory.")
+            
 # === Microphone Input Tab ===
 with tab2:
-    st.write("🎤 Record audio from your microphone (requires permission)")
+    st.markdown("_Use your microphone to record and classify sounds in real-time._")
+    st.write("Record audio from your microphone (requires permission)")
 
     class AudioProcessor(AudioProcessorBase):
         def __init__(self):
@@ -173,7 +184,7 @@ with tab2:
     if ctx and ctx.state.playing and hasattr(ctx.state, "audio_processor") and ctx.state.audio_processor:
         st.write(f"🎧 Captured frames: {len(ctx.state.audio_processor.frames)}")
 
-        if st.button("🔍 Predict from Microphone Audio"):
+        if st.button("Predict from Microphone Audio"):
             audio_data = np.concatenate(ctx.state.audio_processor.frames)
 
             if len(audio_data) < 16000:
@@ -183,7 +194,7 @@ with tab2:
                 sf.write(temp_path, audio_data, 16000)
 
                 try:
-                    with st.spinner("🔍 Analyzing audio..."):
+                    with st.spinner("Analyzing audio..."):
                         features = extract_features(temp_path)
                         prediction = model.predict(features)
                         label = label_encoder.inverse_transform(prediction)[0]
