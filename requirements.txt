@@ -8,3 +8,4 @@ joblib
 av
 matplotlib
 pandas
+plotly
