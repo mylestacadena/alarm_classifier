@@ -151,7 +151,7 @@ def extract_features(file_path):
 if selected_page == "Dashboard":
     st.markdown("Welcome to the alarm sound classifier. Choose a mode on the left.")
 
-elif selected_page == "Audio File-based Sound Classificatio":
+elif selected_page == "Audio File-based Sound Classification":
     st.markdown("_Upload a .wav file and see its predicted alarm type with visual analysis._")
 
     uploaded_file = st.file_uploader("Upload a .wav file", type=["wav"])
