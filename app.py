@@ -144,7 +144,17 @@ def extract_features(file_path):
 
 #Page logic
 if selected_page == "Dashboard":
-    st.markdown("Welcome to the alarm sound classifier. Choose a mode on the left.")
+    st.markdown("""
+    Welcome to the **Alarm Sound Classifier**! This is a web-based system that can detect and classify different types of alarm sounds from audio input. This app allows you to either upload `.wav` files or record live audio using your microphone to identify potential alarms such as fire alarms, sirens, and more.
+    
+    ### 🔧 Features:
+    - Audio file and real-time mic input
+    - Automated sound classification using a trained decision tree model
+    - Visual feedback including waveform, spectrogram, and prediction label
+    
+    > Navigate to the tabs above to start uploading or recording your alarm sounds!
+    
+    """)
 
 elif selected_page == "Audio File-based Sound Classification":
     st.markdown("_Upload a .wav file and see its predicted alarm type with visual analysis._")
