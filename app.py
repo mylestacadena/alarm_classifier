@@ -173,6 +173,8 @@ elif selected_page == "Audio File-based Sound Classification":
                 duration = librosa.get_duration(filename=temp_path)
                 st.write(f"Audio Duration: {round(duration, 2)} seconds")
 
+                st.markdown(f"### Predicted Sound: `{label}`")
+                
                 # === Load audio and generate spectrogram ===
                 y, sr = librosa.load(temp_path, sr=16000)
 
@@ -233,10 +235,10 @@ elif selected_page == "Mic-based Sound Classification":
                 prediction = model.predict(features)
                 label = label_encoder.inverse_transform(prediction)[0]
 
-                st.markdown(f"### 🧠 Predicted Sound: `{label}`")
-
                 duration = librosa.get_duration(filename=temp_audio_path)
                 st.write(f"Audio Duration: {round(duration, 2)} seconds")
+
+                st.markdown(f"### Predicted Sound: `{label}`")
 
                 y, sr = librosa.load(temp_audio_path, sr=16000)
 
