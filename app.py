@@ -69,12 +69,11 @@ with st.sidebar:
             "house", "file-earmark-arrow-down", "mic"],
         menu_icon="cast",
         default_index=0,
-        orientation="vertical",
+        orientation="horizontal",
         styles={
             "container": {
                 "padding": "20px",
                 "background-color": "#164b82",
-                "border-radius": "20px",
             },
             "icon": {"color": "white", "font-size": "13px"},
             "nav-link": {
@@ -155,6 +154,14 @@ hide_menu_style = """
     </style>
 """
 st.markdown(hide_menu_style, unsafe_allow_html=True)
+
+st.markdown("""
+    <style>
+    [data-testid="collapsedControl"] {
+        display: none !important;
+    }
+    </style>
+""", unsafe_allow_html=True)
 
 
 # === Load Model & Encoder ===
