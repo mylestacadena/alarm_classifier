@@ -55,6 +55,7 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
+
 # === Sidebar Navigation ===
 with st.sidebar:
     selected_page = option_menu(
@@ -73,7 +74,7 @@ with st.sidebar:
             "container": {
                 "padding": "20px",
                 "background-color": "#164b82",
-                "border-radius": "20px",
+                "box-shadow": "none",
             },
             "icon": {"color": "white", "font-size": "18px"},
             "nav-link": {
@@ -131,6 +132,14 @@ st.markdown("""
         font-size: 18px;
         margin-top: 10px;
         box-shadow: 2px 2px 6px rgba(0,0,0,0.05);
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+    <style>
+    section[data-testid="stSidebar"] {
+        width: 260px !important;
     }
     </style>
 """, unsafe_allow_html=True)
