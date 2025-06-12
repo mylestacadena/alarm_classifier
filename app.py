@@ -43,7 +43,7 @@ selected_page = option_menu(
     styles={
         "container": {
             "padding": "10px 10px 20px 10px",  # top right bottom left
-            "background-color": "#164b82",
+            "background-color": "#e4b795",
             "justify-content": "center",
         },
         "icon": {"color": "#f2f7fa", "font-size": "13px"},
