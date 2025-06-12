@@ -101,33 +101,34 @@ with tab1:
 
     if uploaded_file:
         st.audio(uploaded_file, format="audio/wav")
+
         with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_file:
             tmp_file.write(uploaded_file.read())
             temp_path = tmp_file.name
 
-    try:
-        with st.spinner("Analyzing audio..."):
-            features = extract_features(temp_path)
-            prediction = model.predict(features)
-            label = label_encoder.inverse_transform(prediction)[0]
+        try:
+            with st.spinner("Analyzing audio..."):
+                features = extract_features(temp_path)
+                prediction = model.predict(features)
+                label = label_encoder.inverse_transform(prediction)[0]
 
-            with st.container():
-                st.markdown('<div class="result-box">', unsafe_allow_html=True)
-                st.success(f"🎯 Predicted Sound: **{label}**")
-                st.markdown('</div>', unsafe_allow_html=True)
+                with st.container():
+                    st.markdown('<div class="result-box">', unsafe_allow_html=True)
+                    st.success(f"🎯 Predicted Sound: **{label}**")
+                    st.markdown('</div>', unsafe_allow_html=True)
 
-            # Spectrogram
-            y, sr = librosa.load(temp_path, sr=16000)
-            D = librosa.amplitude_to_db(np.abs(librosa.stft(y)), ref=np.max)
-            fig, ax = plt.subplots(figsize=(8, 4))
-            img = librosa.display.specshow(D, sr=sr, x_axis='time', y_axis='log', ax=ax)
-            ax.set_title("Live Spectrogram")
-            fig.colorbar(img, ax=ax, format="%+2.0f dB")
-            st.pyplot(fig)
-
+                # Live Spectrogram
+                y, sr = librosa.load(temp_path, sr=16000)
+                D = librosa.amplitude_to_db(np.abs(librosa.stft(y)), ref=np.max)
+                fig, ax = plt.subplots(figsize=(8, 4))
+                img = librosa.display.specshow(D, sr=sr, x_axis='time', y_axis='log', ax=ax)
+                ax.set_title("Live Spectrogram")
+                fig.colorbar(img, ax=ax, format="%+2.0f dB")
+                st.pyplot(fig)
 
         except Exception as e:
             st.error(f"❌ Error processing file: {e}")
+
 
 # === Microphone Input Tab ===
 with tab2:
