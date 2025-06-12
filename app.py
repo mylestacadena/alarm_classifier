@@ -260,7 +260,7 @@ elif selected_page == "Mic-based Sound Classification":
                 D = librosa.amplitude_to_db(np.abs(librosa.stft(y)), ref=np.max)
                 fig_spec = go.Figure(data=go.Heatmap(z=D, colorscale='Viridis'))
                 fig_spec.update_layout(
-                    title=f'Spectogram of: {label}',, 
+                    title=f'Spectogram of: {label}',
                     xaxis_title="Time", 
                     yaxis_title="Frequency (Hz)")
                 st.plotly_chart(fig_spec, use_container_width=True)
