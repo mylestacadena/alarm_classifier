@@ -78,7 +78,7 @@ with st.sidebar:
             },
             "icon": {"color": "white", "font-size": "13px"},
             "nav-link": {
-                "color": "#e0e0e0",
+                "color": "#164b82",
                 "font-size": "13px",
                 "text-align": "left",
                 "margin": "5px 0",
@@ -86,7 +86,7 @@ with st.sidebar:
                 "padding": "10px 15px"
             },
             "nav-link-selected": {
-                "background-color": "white",
+                "background-color": "#699acd",
                 "color": "#6C63FF",
                 "font-weight": "bold"
             },
