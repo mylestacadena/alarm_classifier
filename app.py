@@ -217,67 +217,46 @@ elif selected_page == "Mic-based Sound Classification":
     st.markdown("_Use your microphone to record and classify sounds in real-time or with manual analysis._")
 
     # === Mic Input ===
-    # 1. Record audio from mic
     audio_value = st.audio_input("Record below")
 
-    # 2. Check if something was recorded
     if audio_value:
         st.audio(audio_value, format='audio/wav')
 
-        # 3. Save temporarily and load for processing
         with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_audio:
             temp_audio.write(audio_value.getvalue())
             temp_audio_path = temp_audio.name
 
-        # 4. Extract features and classify
-      try:
+        try:
             with st.spinner("Analyzing audio..."):
-                features = extract_features(temp_path)
-                
-                # Predict probabilities
+                features = extract_features(temp_audio_path)
                 probabilities = model.predict_proba(features)
                 prediction = model.predict(features)
                 label = label_encoder.inverse_transform(prediction)[0]
 
-                duration = librosa.get_duration(filename=temp_path)
+                st.markdown(f"### 🧠 Predicted Sound: `{label}`")
+
+                duration = librosa.get_duration(filename=temp_audio_path)
                 st.write(f"Audio Duration: {round(duration, 2)} seconds")
 
-                # === Load audio and generate spectrogram ===
-                y, sr = librosa.load(temp_path, sr=16000)
+                y, sr = librosa.load(temp_audio_path, sr=16000)
 
-                # === Display Interactive Raw Waveform ===
-                st.markdown("### Raw Audio Waveform")
-                
-                # Generate time axis for the waveform
+                # Waveform
                 time_axis = np.linspace(0, len(y) / sr, num=len(y))
-                
-                # Create interactive plot with Plotly
-                fig_wave_interactive = go.Figure()
-                fig_wave_interactive.add_trace(go.Scatter(
-                    x=time_axis,
-                    y=y,
-                    mode='lines',
-                    name='Waveform',
-                    line=dict(color='royalblue')
-                ))
-                
-                fig_wave_interactive.update_layout(
-                    title='Interactive Audio Waveform',
-                    xaxis_title='Time (s)',
-                    yaxis_title='Amplitude',
-                    showlegend=False,
-                    margin=dict(l=40, r=40, t=40, b=40)
-                )
-                
-                st.plotly_chart(fig_wave_interactive, use_container_width=True)
+                fig_wave = go.Figure()
+                fig_wave.add_trace(go.Scatter(x=time_axis, y=y, mode='lines', line=dict(color='royalblue')))
+                fig_wave.update_layout(title='Interactive Audio Waveform', xaxis_title='Time (s)', yaxis_title='Amplitude')
+                st.plotly_chart(fig_wave, use_container_width=True)
 
-                # === Spectrogram ===
+                # Spectrogram
                 st.markdown("### Spectrogram")
                 D = librosa.amplitude_to_db(np.abs(librosa.stft(y)), ref=np.max)
                 fig_spec = go.Figure(data=go.Heatmap(z=D, colorscale='Viridis'))
                 fig_spec.update_layout(title="Spectrogram", xaxis_title="Time", yaxis_title="Frequency (Hz)")
                 st.plotly_chart(fig_spec, use_container_width=True)
 
+                # Optional: clean up
+                os.remove(temp_audio_path)
+
         except Exception as e:
-            st.error(f"Error processing file: {e}")
+            st.exception(e)
 
