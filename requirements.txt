@@ -9,3 +9,4 @@ av
 matplotlib
 pandas
 plotly
+streamlit-option-menu
