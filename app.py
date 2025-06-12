@@ -14,29 +14,43 @@ st.set_page_config(page_title="Alarm Sound Classifier", layout="centered")
 
 st.markdown("""
     <style>
-    .main {
+    html, body, [class*="css"]  {
         background-color: #f9f9f9;
+        font-family: 'Segoe UI', sans-serif;
     }
+
     h1 {
         color: #1f3c88;
         text-align: center;
     }
+
     .stTabs [data-baseweb="tab"] {
         font-size: 18px;
         font-weight: bold;
+        color: #1f3c88;
     }
-    .stButton>button {
+
+    .stButton > button {
         font-size: 16px;
         background-color: #1f3c88;
         color: white;
         border-radius: 10px;
         padding: 0.5em 1.5em;
+        border: none;
     }
-    .stButton>button:hover {
+
+    .stButton > button:hover {
         background-color: #4059ad;
+        transition: background-color 0.3s ease;
     }
+
+    .stMarkdown, .stText {
+        font-size: 16px;
+    }
+
     </style>
 """, unsafe_allow_html=True)
+
 
 
 
