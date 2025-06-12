@@ -12,6 +12,11 @@ import tempfile
 import plotly.graph_objs as go
 from streamlit_option_menu import option_menu
 
+
+    
+# === Custom UI Styling ===
+st.set_page_config(page_title="Alarm Sound Classifier", layout="centered")
+
 # Define base64 function
 def get_base64_image(image_path):
     with open(image_path, "rb") as img_file:
@@ -32,10 +37,6 @@ st.markdown(
     """,
     unsafe_allow_html=True
 )  
-
-    
-# === Custom UI Styling ===
-st.set_page_config(page_title="Alarm Sound Classifier", layout="centered")
 
 st.markdown("""
     <style>
