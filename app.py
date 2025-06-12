@@ -10,8 +10,35 @@ import av
 import tempfile
 
 # === Custom UI Styling ===
-st.set_page_config(page_title="Real-Time Alarm Sound Classifier", layout="centered")
-st.markdown("<style>.stButton>button { font-size: 18px; padding: 10px 20px; }</style>", unsafe_allow_html=True)
+st.set_page_config(page_title="Alarm Sound Classifier", layout="centered")
+
+st.markdown("""
+    <style>
+    .main {
+        background-color: #f9f9f9;
+    }
+    h1 {
+        color: #1f3c88;
+        text-align: center;
+    }
+    .stTabs [data-baseweb="tab"] {
+        font-size: 18px;
+        font-weight: bold;
+    }
+    .stButton>button {
+        font-size: 16px;
+        background-color: #1f3c88;
+        color: white;
+        border-radius: 10px;
+        padding: 0.5em 1.5em;
+    }
+    .stButton>button:hover {
+        background-color: #4059ad;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+
 
 # === Load Model & Label Encoder ===
 model = joblib.load("decision_tree_model.pkl")
@@ -96,38 +123,26 @@ with tab2:
         audio_processor_factory=AudioProcessor,
     )
 
-    if ctx and ctx.state.playing:
-        if hasattr(ctx.state, "audio_processor") and ctx.state.audio_processor:
-            st.write(f"🎧 Captured frames: {len(ctx.state.audio_processor.frames)}")
+    if ctx and ctx.state.playing and hasattr(ctx.state, "audio_processor") and ctx.state.audio_processor:
+        st.write(f"🎧 Captured frames: {len(ctx.state.audio_processor.frames)}")
 
-            if st.button("🔍 Predict from Microphone Audio"):
-                audio_data = np.concatenate(ctx.state.audio_processor.frames)
+        if st.button("🔍 Predict from Microphone Audio"):
+            audio_data = np.concatenate(ctx.state.audio_processor.frames)
 
-                if len(audio_data) < 16000:  # 1 second of audio at 16kHz
-                    st.warning("Captured audio is too short. Please try again.")
-                else:
-                    temp_path = "mic_input.wav"
-                    sf.write(temp_path, audio_data, 16000)
+            if len(audio_data) < 16000:
+                st.warning("Captured audio is too short. Please try again.")
+            else:
+                temp_path = "mic_input.wav"
+                sf.write(temp_path, audio_data, 16000)
 
-                    try:
-                        with st.spinner("Analyzing microphone input..."):
-                            features = extract_features(temp_path)
-                            prediction = model.predict(features)
-                            label = label_encoder.inverse_transform(prediction)[0]
-                            st.success(f"🎯 Predicted Sound: **{label}**")
+                try:
+                    with st.spinner("🔍 Analyzing audio..."):
+                        features = extract_features(temp_path)
+                        prediction = model.predict(features)
+                        label = label_encoder.inverse_transform(prediction)[0]
+                        st.success(f"Predicted Sound: **{label}**")
+                except Exception as e:
+                    st.error(f"Error processing mic input: {e}")
+                finally:
+                    ctx.state.audio_processor.frames.clear()
 
-                            # Optional waveform
-                            fig, ax = plt.subplots()
-                            ax.plot(audio_data)
-                            ax.set_title("Microphone Audio Waveform")
-                            ax.set_xlabel("Sample")
-                            ax.set_ylabel("Amplitude")
-                            st.pyplot(fig)
-
-                            # ✅ Clear frames after prediction
-                            ctx.state.audio_processor.frames.clear()
-
-                    except Exception as e:
-                        st.error(f"❌ Error processing mic input: {e}")
-        else:
-            st.info("🔄 Initializing microphone... please wait.")
