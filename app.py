@@ -9,6 +9,7 @@ from streamlit_webrtc import webrtc_streamer, AudioProcessorBase, WebRtcMode
 import av
 import tempfile
 import plotly.graph_objs as go
+from streamlit_option_menu import option_menu
 
 # === Custom UI Styling ===
 st.set_page_config(page_title="Alarm Sound Classifier", layout="centered")
@@ -84,7 +85,32 @@ st.markdown(hide_menu_style, unsafe_allow_html=True)
 model = joblib.load("decision_tree_model.pkl")
 label_encoder = joblib.load("label_encoder.pkl")
 
-# === Feature Extraction ===
+# === Navigation Menu ===
+selected = option_menu(
+    menu_title=None,
+    options=["Home", "Upload Audio File", "Use Microphone"],
+    icons=["house", "file-earmark-arrow-down", "mic"],
+    menu_icon="cast",
+    default_index=0,
+    orientation="horizontal",
+)
+
+# === Home Section ===
+if selected == "Home":
+    st.title("🔊 Smart Audio Classifier")
+    st.markdown("Welcome to the Audio Classification App. Select an option above to begin.")
+
+# === Upload Audio File Section ===
+elif selected == "Upload Audio File":
+    # your tab1 content goes here
+    ...
+
+# === Use Microphone Section ===
+elif selected == "Use Microphone":
+    # your tab2 content goes here
+    ...
+
+# === Feature Extraction Function ===
 def extract_features(file_path):
     y, sr = librosa.load(file_path, sr=16000)
     mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
@@ -107,12 +133,9 @@ def extract_features(file_path):
 
     return np.array(list(features.values())).reshape(1, -1)
 
-# === UI Title ===
 
-tab1, tab2 = st.tabs(["Upload Audio File", "Use Microphone"])
-
-# === File Upload Tab ===
-with tab1:
+# === "Upload Audio File" Tab Content ===
+if selected == "Upload Audio File":
     st.markdown("_Upload a .wav file and see its predicted alarm type with visual analysis._")
     uploaded_file = st.file_uploader("Upload a .wav file", type=["wav"])
 
@@ -157,7 +180,7 @@ with tab1:
         except Exception as e:
             st.error(f"Error processing file: {e}")
 
-    # === 🔁 Sound Comparison Section ===
+    # 🔁 Sound Comparison Section
     st.markdown("### 🔁 Compare with Sample Alarms")
     if st.checkbox("Enable Sample Comparison"):
         sample_choice = st.selectbox("Choose a sample sound", ["Fire Alarm", "Car Horn", "Dog Bark"])
@@ -166,9 +189,10 @@ with tab1:
             st.audio(sample_path, format="audio/wav")
         else:
             st.warning("Sample file not found. Please check your samples directory.")
-            
-# === Microphone Input Tab ===
-with tab2:
+
+
+# === "Use Microphone" Tab Content ===
+elif selected == "Use Microphone":
     st.markdown("_Use your microphone to record and classify sounds in real-time._")
     st.write("Record audio from your microphone (requires permission)")
 
