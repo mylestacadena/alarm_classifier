@@ -1,8 +1,4 @@
 import streamlit as st
-
-# === Custom UI Styling ===
-st.set_page_config(page_title="Alarm Sound Classifier", layout="centered")
-
 import base64
 import numpy as np
 import librosa
