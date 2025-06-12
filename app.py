@@ -13,7 +13,7 @@ import plotly.graph_objs as go
 from streamlit_option_menu import option_menu
 
 # === Page Setup ===
-st.set_page_config(page_title="Alarm Sound Classifier", layout="centered")
+st.set_page_config(page_title="Alarm Sound Classifier", layout="wide")
 
 # === Background Image ===
 def get_base64_image(image_path):
