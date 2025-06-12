@@ -1,45 +1,43 @@
 import streamlit as st
+import numpy as np
+import tensorflow as tf
+import soundfile as sf
+import io
+from utils.audio_utils import extract_mfcc
 
-# Page Config
-st.set_page_config(page_title="Alarm Sound Classifier", layout="centered")
+# Load TFLite model
+@st.cache_resource
+def load_model(model_path="your_model.tflite"):
+    interpreter = tf.lite.Interpreter(model_path=model_path)
+    interpreter.allocate_tensors()
+    return interpreter
 
-# Title/Header
-st.markdown("""
-    <div style='text-align: center; padding: 2rem 0;'>
-        <h1 style='font-size: 2.5rem; font-weight: 700; color: #2c3e50;'>🔊 Alarm Sound Classifier</h1>
-        <p style='font-size: 1.1rem; color: #7f8c8d;'>Upload a sound file to identify if it’s an alarm or not.</p>
-    </div>
-""", unsafe_allow_html=True)
+# UI
+st.title("🔊 Real-Time Alarm Sound Classifier")
+st.write("Upload a `.wav` file to detect the type of alarm sound.")
 
-# Upload Section
-uploaded_file = st.file_uploader("Upload your alarm sound (.wav or .mp3)", type=["wav", "mp3"])
+uploaded_file = st.file_uploader("Choose a .wav file", type=["wav"])
 
-# Display file name and button
-if uploaded_file is not None:
-    st.success(f"File uploaded: {uploaded_file.name}")
+if uploaded_file:
+    try:
+        audio_data, sample_rate = sf.read(io.BytesIO(uploaded_file.read()))
+        if len(audio_data.shape) > 1:
+            audio_data = np.mean(audio_data, axis=1)
 
-    if st.button("🔍 Classify Sound"):
-        with st.spinner("Analyzing sound..."):
-            # Replace this with your model prediction function
-            prediction = "Alarm"  # Example output
-            confidence = 93.5     # Example confidence percentage
+        mfcc_input = extract_mfcc(audio_data, sr=sample_rate)
 
-        # Result Display
-        st.markdown(f"""
-            <div style='text-align: center; padding: 1.5rem; background-color: #ecf0f1; border-radius: 10px;'>
-                <h2 style='color: #27ae60;'>Prediction: {prediction}</h2>
-                <p style='font-size: 1rem; color: #34495e;'>Confidence: {confidence:.2f}%</p>
-            </div>
-        """, unsafe_allow_html=True)
+        interpreter = load_model("your_model.tflite")
+        input_details = interpreter.get_input_details()
+        output_details = interpreter.get_output_details()
 
-# Optional: Display waveform or audio preview
-if uploaded_file is not None:
-    st.audio(uploaded_file)
+        interpreter.set_tensor(input_details[0]['index'], mfcc_input)
+        interpreter.invoke()
+        output = interpreter.get_tensor(output_details[0]['index'])
 
-# Footer
-st.markdown("""
-    <hr style="margin-top: 3rem;"/>
-    <div style='text-align: center; font-size: 0.9rem; color: #95a5a6;'>
-        Developed by Mylestacadena · Alarm Classifier Project · 2025
-    </div>
-""", unsafe_allow_html=True)
+        predicted_class = int(np.argmax(output))
+        labels = {0: "Fire Alarm", 1: "School Bell", 2: "CO Detector"}  # customize
+        st.success(f"Predicted Alarm: {labels.get(predicted_class, 'Unknown')}")
+        st.bar_chart(output[0])
+
+    except Exception as e:
+        st.error(f"Error: {e}")
