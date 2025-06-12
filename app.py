@@ -13,43 +13,35 @@ import tempfile
 st.set_page_config(page_title="Alarm Sound Classifier", layout="centered")
 
 st.markdown("""
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
     <style>
     html, body, [class*="css"] {
-        font-family: 'Poppins', sans-serif;
-        background-color: #F3F3E0;
+        font-family: Arial, sans-serif;
+        background-color: #EAE4D5;
     }
 
     .stApp {
-        background-color: #F3F3E0;
+        background-color: #EAE4D5;
     }
 
     .app-title {
-        position: absolute;
-        top: 15px;
-        left: 25px;
-        font-size: 24px;
-        font-weight: 600;
-        color: #1f3c88;
-        font-family: 'Poppins', sans-serif;
-    }
-
-    h1 {
         text-align: center;
+        font-size: 32px;
+        font-weight: bold;
         color: #1f3c88;
-        font-family: 'Poppins', sans-serif;
+        margin-top: 10px;
+        margin-bottom: 20px;
     }
 
     .stTabs [data-baseweb="tab"] {
         font-size: 18px;
         font-weight: bold;
         color: #1f3c88;
-        font-family: 'Poppins', sans-serif;
+        font-family: Arial, sans-serif;
     }
 
     .stButton > button {
         font-size: 16px;
-        background-color: #1f3c88;
+        background-color: #DFD0B8;
         color: white;
         border-radius: 10px;
         padding: 0.5em 1.5em;
@@ -57,16 +49,12 @@ st.markdown("""
     }
 
     .stButton > button:hover {
-        background-color: #4059ad;
+        background-color: #948979;
     }
     </style>
-    <div class="app-title">🔊 Alarm Sound Classifier</div>
+
+    <div class="app-title">Alarm Sound Classifier</div>
 """, unsafe_allow_html=True)
-
-st.markdown('<div class="app-title">Alarm Sound Classifier</div>', unsafe_allow_html=True)
-
-
-
 
 # === Load Model & Label Encoder ===
 model = joblib.load("decision_tree_model.pkl")
