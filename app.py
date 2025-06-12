@@ -79,7 +79,7 @@ with st.sidebar:
             "icon": {"color": "white", "font-size": "13px"},
             "nav-link": {
                 "color": "#e0e0e0",
-                "font-size": "16px",
+                "font-size": "13px",
                 "text-align": "left",
                 "margin": "5px 0",
                 "border-radius": "10px",
@@ -92,7 +92,7 @@ with st.sidebar:
             },
             "menu-title": {
                 "color": "white",
-                "font-size": "24px",
+                "font-size": "15px",
                 "font-weight": "bold",
                 "padding-bottom": "20px"
             }
@@ -133,6 +133,16 @@ st.markdown("""
         font-size: 18px;
         margin-top: 10px;
         box-shadow: 2px 2px 6px rgba(0,0,0,0.05);
+    }
+    </style>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+    <style>
+    section[data-testid="stSidebar"] {
+        width: 280px !important;  /* Set your desired fixed width */
+        min-width: 280px !important;
+        max-width: 280px !important;
     }
     </style>
 """, unsafe_allow_html=True)
