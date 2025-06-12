@@ -119,11 +119,13 @@ label_encoder = joblib.load("label_encoder.pkl")
 
 #Feature extraction
 def extract_features(file_path):
-    y, sr = librosa.load(file_path, sr=None)  
+    y, sr = librosa.load(file_path, sr=None)
     if sr != 16000:
         st.warning("Resampling to 16kHz for processing.")
         y = librosa.resample(y, orig_sr=sr, target_sr=16000)
         sr = 16000
+
+    # Extract features
     mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
     spectral_centroid = librosa.feature.spectral_centroid(y=y, sr=sr)
     spectral_rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr)
@@ -131,6 +133,7 @@ def extract_features(file_path):
     rms = librosa.feature.rms(y=y)
     duration = librosa.get_duration(y=y, sr=sr)
 
+    # Assemble feature dictionary
     features = {
         "duration": duration,
         "zcr": np.mean(zero_crossings),
@@ -138,9 +141,17 @@ def extract_features(file_path):
         "centroid": np.mean(spectral_centroid),
         "rolloff": np.mean(spectral_rolloff),
     }
-    for i, coeff in enumerate(mfcc):
-        features[f"mfcc_{i+1}"] = np.mean(coeff)
-    return np.array(list(features.values())).reshape(1, -1)
+
+    # Add 13 MFCCs: mfcc_1 to mfcc_13
+    for i in range(13):
+        features[f"mfcc_{i+1}"] = np.mean(mfcc[i]) if i < mfcc.shape[0] else 0.0
+
+    # Ensure total of 19 features
+    feature_array = np.array(list(features.values())).reshape(1, -1)
+    if feature_array.shape[1] != 19:
+        raise ValueError(f"Feature vector has {feature_array.shape[1]} features, but 19 are required.")
+    
+    return feature_array
 
 #Page logic
 if selected_page == "Dashboard":
