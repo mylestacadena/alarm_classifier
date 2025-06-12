@@ -32,15 +32,9 @@ st.markdown(f"""
     </style>
 """, unsafe_allow_html=True)
 
-st.markdown("""
-    <div style='text-align: center; font-size: 24px; font-weight: bold; margin-top: -20px; margin-bottom: 10px; color: #164b82;'>
-        Alarm Sound Classifier
-    </div>
-""", unsafe_allow_html=True)
-
 # === Top Navigation Bar ===
 selected_page = option_menu(
-    menu_title="",
+    menu_title="Alarm Sound Classifier",
     options=["Dashboard", "Upload Audio File", "Use Microphone"],
     icons=["house", "file-earmark-arrow-down", "mic"],
     menu_icon="volume-up-fill",
@@ -48,7 +42,7 @@ selected_page = option_menu(
     orientation="horizontal",
     styles={
         "container": {
-            "padding": "10px 0px 20px 0px",  # top right bottom left
+            "padding": "10px 0px 20px 10px",  # top right bottom left
             "background-color": "#164b82",
             "justify-content": "center",
         },
