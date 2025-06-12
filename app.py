@@ -112,15 +112,6 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-# === Hide Streamlit Default UI ===
-st.markdown("""
-    <style>
-    #MainMenu {visibility: hidden;}
-    footer {visibility: hidden;}
-    header {visibility: hidden;}
-    </style>
-""", unsafe_allow_html=True)
-
 # === Load Model & Encoder ===
 model = joblib.load("decision_tree_model.pkl")
 label_encoder = joblib.load("label_encoder.pkl")
