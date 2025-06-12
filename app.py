@@ -3,15 +3,21 @@ import numpy as np
 import librosa
 import joblib
 import os
+import soundfile as sf
+import matplotlib.pyplot as plt
 from streamlit_webrtc import webrtc_streamer, AudioProcessorBase, WebRtcMode
 import av
 import tempfile
 
-# Load model and label encoder
+# === Custom UI Styling ===
+st.set_page_config(page_title="Real-Time Alarm Sound Classifier", layout="centered")
+st.markdown("<style>.stButton>button { font-size: 18px; padding: 10px 20px; }</style>", unsafe_allow_html=True)
+
+# === Load Model & Label Encoder ===
 model = joblib.load("decision_tree_model.pkl")
 label_encoder = joblib.load("label_encoder.pkl")
 
-# Feature extraction function
+# === Feature Extraction ===
 def extract_features(file_path):
     y, sr = librosa.load(file_path, sr=16000)
     mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
@@ -34,7 +40,7 @@ def extract_features(file_path):
 
     return np.array(list(features.values())).reshape(1, -1)
 
-# === Streamlit UI ===
+# === UI Title ===
 st.title("🔊 Real-Time Alarm Sound Classifier")
 
 tab1, tab2 = st.tabs(["📁 Upload Audio File", "🎤 Use Microphone"])
@@ -50,14 +56,25 @@ with tab1:
             temp_path = tmp_file.name
 
         try:
-            features = extract_features(temp_path)
-            prediction = model.predict(features)
-            label = label_encoder.inverse_transform(prediction)[0]
-            st.success(f"Predicted Sound: **{label}**")
-        except Exception as e:
-            st.error(f"Error processing file: {e}")
+            with st.spinner("Analyzing audio..."):
+                features = extract_features(temp_path)
+                prediction = model.predict(features)
+                label = label_encoder.inverse_transform(prediction)[0]
+                st.success(f"🎯 Predicted Sound: **{label}**")
 
-# === Microphone Tab ===
+                # Optional waveform
+                y, sr = librosa.load(temp_path, sr=16000)
+                fig, ax = plt.subplots()
+                ax.plot(y)
+                ax.set_title("Waveform")
+                ax.set_xlabel("Sample")
+                ax.set_ylabel("Amplitude")
+                st.pyplot(fig)
+
+        except Exception as e:
+            st.error(f"❌ Error processing file: {e}")
+
+# === Microphone Input Tab ===
 with tab2:
     st.write("🎤 Record audio from your microphone (requires permission)")
 
@@ -75,28 +92,42 @@ with tab2:
         mode=WebRtcMode.SENDONLY,
         audio_receiver_size=512,
         media_stream_constraints={"audio": True, "video": False},
-        rtc_configuration={
-            "iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]
-        },
+        rtc_configuration={"iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]},
         audio_processor_factory=AudioProcessor,
     )
 
     if ctx and ctx.state.playing:
         if hasattr(ctx.state, "audio_processor") and ctx.state.audio_processor:
+            st.write(f"🎧 Captured frames: {len(ctx.state.audio_processor.frames)}")
+
             if st.button("🔍 Predict from Microphone Audio"):
                 audio_data = np.concatenate(ctx.state.audio_processor.frames)
-                if len(audio_data) == 0:
-                    st.warning("No audio captured. Please speak into the mic.")
+
+                if len(audio_data) < 16000:  # 1 second of audio at 16kHz
+                    st.warning("Captured audio is too short. Please try again.")
                 else:
                     temp_path = "mic_input.wav"
-                    librosa.output.write_wav(temp_path, audio_data, sr=16000)
+                    sf.write(temp_path, audio_data, 16000)
 
                     try:
-                        features = extract_features(temp_path)
-                        prediction = model.predict(features)
-                        label = label_encoder.inverse_transform(prediction)[0]
-                        st.success(f"Predicted Sound: **{label}**")
+                        with st.spinner("Analyzing microphone input..."):
+                            features = extract_features(temp_path)
+                            prediction = model.predict(features)
+                            label = label_encoder.inverse_transform(prediction)[0]
+                            st.success(f"🎯 Predicted Sound: **{label}**")
+
+                            # Optional waveform
+                            fig, ax = plt.subplots()
+                            ax.plot(audio_data)
+                            ax.set_title("Microphone Audio Waveform")
+                            ax.set_xlabel("Sample")
+                            ax.set_ylabel("Amplitude")
+                            st.pyplot(fig)
+
+                            # ✅ Clear frames after prediction
+                            ctx.state.audio_processor.frames.clear()
+
                     except Exception as e:
-                        st.error(f"Error processing mic input: {e}")
+                        st.error(f"❌ Error processing mic input: {e}")
         else:
             st.info("🔄 Initializing microphone... please wait.")
