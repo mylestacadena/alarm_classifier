@@ -32,13 +32,18 @@ st.markdown(f"""
     </style>
 """, unsafe_allow_html=True)
 
+st.markdown("""
+    <div style='text-align: center; font-size: 24px; font-weight: bold; margin-top: -20px; margin-bottom: 10px; color: #164b82;'>
+        Alarm Sound Classifier
+    </div>
+""", unsafe_allow_html=True)
 
 # === Top Navigation Bar ===
 selected_page = option_menu(
-    menu_title="Alarm Sound Classifier",
+    menu_title="",
     options=["Dashboard", "Upload Audio File", "Use Microphone"],
     icons=["house", "file-earmark-arrow-down", "mic"],
-    menu_icon="cast",
+    menu_icon="volume-up-fill",
     default_index=0,
     orientation="horizontal",
     styles={
@@ -47,10 +52,10 @@ selected_page = option_menu(
             "background-color": "#164b82",
             "justify-content": "center",
         },
-        "icon": {"color": "#f2f7fa", "font-size": "16px"},
+        "icon": {"color": "#f2f7fa", "font-size": "13px"},
         "nav-link": {
             "color": "#f2f7fa",
-            "font-size": "15px",
+            "font-size": "13px",
             "margin": "0px 20px",  # space between nav items
             "padding": "10px 20px",
             "border-radius": "8px"
