@@ -16,11 +16,11 @@ st.markdown("""
     <style>
     html, body, [class*="css"] {
         font-family: Arial, sans-serif;
-        background-color: #EAE4D5;
+        background-color: #F8EEDF;
     }
 
     .stApp {
-        background-color: #EAE4D5;
+        background-color: #F8EEDF;
     }
 
     .app-title {
