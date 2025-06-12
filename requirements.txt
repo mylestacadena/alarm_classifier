@@ -1,12 +1,11 @@
 streamlit
+streamlit-option-menu
 streamlit-webrtc
 librosa
-scikit-learn
 soundfile
-numpy
 joblib
-av
+scikit-learn
+numpy
 matplotlib
-pandas
 plotly
-streamlit-option-menu
+av
