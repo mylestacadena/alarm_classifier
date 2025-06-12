@@ -31,7 +31,8 @@ st.markdown(
     </style>
     """,
     unsafe_allow_html=True
-)
+)  
+
     
 # === Custom UI Styling ===
 st.set_page_config(page_title="Alarm Sound Classifier", layout="centered")
