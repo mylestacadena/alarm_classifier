@@ -215,7 +215,44 @@ elif selected_page == "Upload Audio File":
 
 elif selected_page == "Use Microphone":
     st.markdown('<div class="app-title">🎙️ Use Microphone</div>', unsafe_allow_html=True)
-    st.markdown("_Use your microphone to record and classify sounds in real-time._")
+    st.markdown("_Use your microphone to record and classify sounds in real-time or with manual analysis._")
+
+    # === Live Prediction Setup ===
+    st.subheader("🔴 Real-Time Sound Classification")
+    st.caption("Allow mic permissions in your browser.")
+
+    if "live_prediction" not in st.session_state:
+        st.session_state["live_prediction"] = "Waiting..."
+
+    def audio_callback(frame: av.AudioFrame):
+        audio = frame.to_ndarray(format="flt32")
+        if audio.ndim > 1:
+            audio = audio.mean(axis=0)
+        sr = frame.sample_rate
+        try:
+            features = extract_features(audio, sr).reshape(1, -1)
+            if features.shape[1] == model.n_features_in_:
+                pred = model.predict(features)[0]
+                st.session_state["live_prediction"] = f"{ALL_CLASSES.get(pred, '')} ({pred})"
+            else:
+                st.session_state["live_prediction"] = "⚠️ Feature mismatch"
+        except Exception as e:
+            st.session_state["live_prediction"] = f"❌ Error: {e}"
+        return frame
+
+    webrtc_streamer(
+        key="live-audio",
+        audio_frame_callback=audio_callback,
+        media_stream_constraints={"audio": True, "video": False},
+        async_processing=True,
+    )
+
+    st.info(f"🎧 Real-Time Prediction: **{st.session_state['live_prediction']}**")
+
+    st.divider()
+
+    # === Manual Recording and Analysis ===
+    st.subheader("🎤 Manual Microphone Capture & Predict")
 
     class AudioProcessor(AudioProcessorBase):
         def __init__(self):
@@ -227,7 +264,7 @@ elif selected_page == "Use Microphone":
             return frame
 
     ctx = webrtc_streamer(
-        key="mic",
+        key="mic-recording",
         mode=WebRtcMode.SENDONLY,
         audio_receiver_size=512,
         media_stream_constraints={"audio": True, "video": False},
@@ -237,60 +274,62 @@ elif selected_page == "Use Microphone":
 
     if ctx and ctx.state.playing and hasattr(ctx.state, "audio_processor"):
         frames = ctx.state.audio_processor.frames
-        st.write(f"🔊 Captured frames: {len(frames)}")
+        st.write(f"🔊 Captured audio chunks: {len(frames)}")
 
         if st.button("🔍 Predict from Microphone Audio"):
-            if len(frames) == 0:
-                st.warning("No audio captured yet.")
+            if not frames:
+                st.warning("⚠️ No audio captured. Please speak into the microphone.")
             else:
                 audio_data = np.concatenate(frames)
+                st.write(f"📊 Audio data length: {len(audio_data)} samples")
+
                 if len(audio_data) < 16000:
-                    st.warning("⚠️ Captured audio is too short.")
+                    st.warning("⚠️ Captured audio is too short. Speak longer before predicting.")
                 else:
                     temp_path = "mic_input.wav"
                     sf.write(temp_path, audio_data, 16000)
 
                     try:
-                        duration = librosa.get_duration(filename=temp_path)
-                        st.write(f"📏 Audio Duration: **{round(duration, 2)} seconds**")
+                        info = sf.info(temp_path)
+                        st.write(f"📄 WAV file: {info.frames} frames, {info.samplerate} Hz")
 
-                        with st.spinner("🔎 Analyzing audio..."):
-                            y, sr = librosa.load(temp_path, sr=16000)
-                            features = extract_features(temp_path)
-                            prediction = model.predict(features)
-                            probabilities = model.predict_proba(features)
-                            label = label_encoder.inverse_transform(prediction)[0]
-                            confidence = np.max(probabilities) * 100
+                        y, sr = librosa.load(temp_path, sr=16000)
+                        st.write(f"📦 Loaded audio: {len(y)} samples")
 
-                            st.success(f"✅ Predicted Sound: **{label}**")
-                            st.info(f"🧠 Model Confidence: **{confidence:.2f}%**")
+                        features = extract_features(temp_path)
+                        prediction = model.predict(features)
+                        probabilities = model.predict_proba(features)
+                        label = label_encoder.inverse_transform(prediction)[0]
+                        confidence = np.max(probabilities) * 100
 
-                            # Top N Predictions
-                            top_n = 3
-                            top_indices = np.argsort(probabilities[0])[::-1][:top_n]
-                            st.markdown("**📌 Top Predictions:**")
-                            for i in top_indices:
-                                lbl = label_encoder.inverse_transform([i])[0]
-                                prob = probabilities[0][i] * 100
-                                st.write(f"- {lbl}: {prob:.2f}%")
+                        st.success(f"✅ Predicted Sound: **{label}**")
+                        st.info(f"🧠 Model Confidence: **{confidence:.2f}%**")
 
-                            # Raw waveform
-                            st.markdown("### 📈 Raw Audio Waveform")
-                            fig_wave, ax_wave = plt.subplots()
-                            librosa.display.waveshow(y, sr=sr, ax=ax_wave)
-                            ax_wave.set_title('Waveform')
-                            ax_wave.set_xlabel('Time (s)')
-                            ax_wave.set_ylabel('Amplitude')
-                            st.pyplot(fig_wave)
+                        # Top Predictions
+                        top_n = 3
+                        top_indices = np.argsort(probabilities[0])[::-1][:top_n]
+                        st.markdown("**📌 Top Predictions:**")
+                        for i in top_indices:
+                            lbl = label_encoder.inverse_transform([i])[0]
+                            prob = probabilities[0][i] * 100
+                            st.write(f"- {lbl}: {prob:.2f}%")
 
-                            # Optional: Save history
-                            from datetime import datetime
-                            timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-                            top_preds_str = ", ".join(
-                                [f"{label_encoder.inverse_transform([i])[0]}: {probabilities[0][i]*100:.2f}%" for i in top_indices]
-                            )
+                        # Raw waveform
+                        st.markdown("### 📈 Raw Audio Waveform")
+                        fig_wave, ax_wave = plt.subplots()
+                        librosa.display.waveshow(y, sr=sr, ax=ax_wave)
+                        ax_wave.set_title('Waveform')
+                        ax_wave.set_xlabel('Time (s)')
+                        ax_wave.set_ylabel('Amplitude')
+                        st.pyplot(fig_wave)
 
-                            save_result("Microphone Input", label, confidence, timestamp, top_preds_str)
+                        # Save result
+                        from datetime import datetime
+                        timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+                        top_preds_str = ", ".join(
+                            [f"{label_encoder.inverse_transform([i])[0]}: {probabilities[0][i]*100:.2f}%" for i in top_indices]
+                        )
+                        save_result("Microphone Input", label, confidence, timestamp, top_preds_str)
 
                     except Exception as e:
                         st.error(f"🚨 Error processing microphone input: {e}")
