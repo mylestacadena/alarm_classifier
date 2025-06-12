@@ -35,7 +35,7 @@ st.markdown("""
     .stTabs [data-baseweb="tab"] {
         font-size: 18px;
         font-weight: bold;
-        color: #948979;
+        color: #5e503f;
         font-family: Arial, sans-serif;
     }
 
