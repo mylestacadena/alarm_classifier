@@ -78,14 +78,6 @@ st.markdown("""
         font-family: Arial, sans-serif;
         background-color: #fefae0;
     }
-    .app-title {
-        text-align: center;
-        font-size: 40px;
-        font-weight: bold;
-        color: #164b82;
-        margin-top: 10px;
-        margin-bottom: 20px;
-    }
     .stButton > button {
         font-size: 16px;
         background-color: #f2f7fa;
@@ -104,16 +96,6 @@ st.markdown("""
         font-size: 18px;
         margin-top: 10px;
         box-shadow: 2px 2px 6px rgba(0,0,0,0.05);
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-st.markdown("""
-    <style>
-    section[data-testid="stSidebar"] {
-        width: 280px !important;  /* Set your desired fixed width */
-        min-width: 280px !important;
-        max-width: 280px !important;
     }
     </style>
 """, unsafe_allow_html=True)
@@ -167,7 +149,6 @@ def extract_features(file_path):
 
 # === Page Logic ===
 if selected_page == "Dashboard":
-    st.markdown('<div class="app-title">Alarm Sound Classifier</div>', unsafe_allow_html=True)
     st.markdown("Welcome to the alarm sound classifier. Choose a mode on the left.")
 
 elif selected_page == "Upload Audio File":
