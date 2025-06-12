@@ -119,13 +119,11 @@ label_encoder = joblib.load("label_encoder.pkl")
 
 #Feature extraction
 def extract_features(file_path):
-    y, sr = librosa.load(file_path, sr=None)
+    y, sr = librosa.load(file_path, sr=None)  
     if sr != 16000:
         st.warning("Resampling to 16kHz for processing.")
         y = librosa.resample(y, orig_sr=sr, target_sr=16000)
         sr = 16000
-
-    # Extract features
     mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
     spectral_centroid = librosa.feature.spectral_centroid(y=y, sr=sr)
     spectral_rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr)
@@ -133,7 +131,6 @@ def extract_features(file_path):
     rms = librosa.feature.rms(y=y)
     duration = librosa.get_duration(y=y, sr=sr)
 
-    # Assemble feature dictionary
     features = {
         "duration": duration,
         "zcr": np.mean(zero_crossings),
@@ -141,22 +138,14 @@ def extract_features(file_path):
         "centroid": np.mean(spectral_centroid),
         "rolloff": np.mean(spectral_rolloff),
     }
-
-    # Add 13 MFCCs: mfcc_1 to mfcc_13
-    for i in range(13):
-        features[f"mfcc_{i+1}"] = np.mean(mfcc[i]) if i < mfcc.shape[0] else 0.0
-
-    # Ensure total of 19 features
-    feature_array = np.array(list(features.values())).reshape(1, -1)
-    if feature_array.shape[1] != 19:
-        raise ValueError(f"Feature vector has {feature_array.shape[1]} features, but 19 are required.")
-    
-    return feature_array
+    for i, coeff in enumerate(mfcc):
+        features[f"mfcc_{i+1}"] = np.mean(coeff)
+    return np.array(list(features.values())).reshape(1, -1)
 
 #Page logic
 if selected_page == "Dashboard":
     st.markdown("""
-    Welcome to the **Alarm Sound Classifier**! This is a web-based system that can detect and classify different types of alarm sounds from audio input. This app allows you to either upload `.wav` files or record live audio using your microphone to identify potential alarms such as fire alarms, sirens, and more.
+    Welcome to the **Alarm Sound Classifier**! This is a web-based system that can detect and classify different types of alarm sounds from audio input. This app allows you to either upload .wav files or record live audio using your microphone to identify potential alarms such as fire alarms, sirens, and more.
     
     ### 🔧 Features:
     - Audio file and real-time mic input
@@ -187,7 +176,7 @@ elif selected_page == "Audio File-based Sound Classification":
                 duration = librosa.get_duration(filename=temp_path)
                 st.write(f"Audio Duration: {round(duration, 2)} seconds")
 
-                st.markdown(f"<h3 style='font-size:18px;'>Predicted Sound: `{label}`</h3>", unsafe_allow_html=True)
+                st.markdown(f"<h3 style='font-size:18px;'>Predicted Sound: {label}</h3>", unsafe_allow_html=True)
                 
                 y, sr = librosa.load(temp_path, sr=16000)
 
@@ -264,7 +253,7 @@ elif selected_page == "Mic-based Sound Classification":
                 duration = librosa.get_duration(filename=temp_audio_path)
                 st.write(f"Audio Duration: {round(duration, 2)} seconds")
 
-                st.markdown(f"<h3 style='font-size:18px;'>Predicted Sound: `{label}`</h3>", unsafe_allow_html=True)
+                st.markdown(f"<h3 style='font-size:18px;'>Predicted Sound: {label}</h3>", unsafe_allow_html=True)
 
                 y, sr = librosa.load(temp_audio_path, sr=16000)
 
@@ -305,4 +294,3 @@ elif selected_page == "Mic-based Sound Classification":
 
         except Exception as e:
             st.exception(e)
-
