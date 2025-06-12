@@ -76,7 +76,7 @@ with st.sidebar:
                 "background-color": "#164b82",
                 "border-radius": "20px",
             },
-            "icon": {"color": "white", "font-size": "18px"},
+            "icon": {"color": "white", "font-size": "13px"},
             "nav-link": {
                 "color": "#e0e0e0",
                 "font-size": "16px",
@@ -133,28 +133,6 @@ st.markdown("""
         font-size: 18px;
         margin-top: 10px;
         box-shadow: 2px 2px 6px rgba(0,0,0,0.05);
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-# === Sidebar Background Styling Fix ===
-st.markdown("""
-    <style>
-    section[data-testid="stSidebar"] {
-        background-color: #164b82 !important;
-        padding: 0 !important;
-        overflow: hidden;
-    }
-    .css-1d391kg, .css-1v3fvcr {
-        background-color: #164b82 !important;
-    }
-    </style>
-""", unsafe_allow_html=True)
-
-st.markdown("""
-    <style>
-    section[data-testid="stSidebar"] {
-        width: 260px !important;
     }
     </style>
 """, unsafe_allow_html=True)
