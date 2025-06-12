@@ -183,7 +183,8 @@ elif selected_page == "Audio File-based Sound Classification":
                 ))
                 
                 fig_wave_interactive.update_layout(
-                    title=f'Raw Audio Waveform of {label}', font=dict(size=18)),
+                    title=f'Raw Audio Waveform of {label}',
+                    font=dict(size=18),
                     xaxis_title='Time (s)',
                     yaxis_title='Amplitude',
                     showlegend=False,
@@ -194,13 +195,26 @@ elif selected_page == "Audio File-based Sound Classification":
 
                 #Spectrogram
                 st.markdown("### Spectrogram")
-                D = librosa.amplitude_to_db(np.abs(librosa.stft(y)), ref=np.max)
-                fig_spec = go.Figure(data=go.Heatmap(z=D, colorscale='Viridis'))
+                S = librosa.stft(y)
+                D = librosa.amplitude_to_db(np.abs(S), ref=np.max)
+                frequencies = librosa.fft_frequencies(sr=sr)
+                times = librosa.frames_to_time(np.arange(S.shape[1]), sr=sr)
+                
+                fig_spec = go.Figure(data=go.Heatmap(
+                    z=D,
+                    x=times,
+                    y=frequencies,
+                    colorscale='Viridis'
+                ))
                 fig_spec.update_layout(
-                    title=f'Spectogram of {label}', font=dict(size=18)),
-                    xaxis_title="Time (s)", 
-                    yaxis_title="Frequency (Hz)")
+                    title=f"Spectrogram of {label}",
+                    font=dict(size=18),
+                    xaxis_title="Time (s)",
+                    yaxis_title="Frequency (Hz)"
+                )
                 st.plotly_chart(fig_spec, use_container_width=True)
+
+                os.remove(temp_path)
 
         except Exception as e:
             st.error(f"Error processing file: {e}")
@@ -239,19 +253,31 @@ elif selected_page == "Mic-based Sound Classification":
                 fig_wave = go.Figure()
                 fig_wave.add_trace(go.Scatter(x=time_axis, y=y, mode='lines', line=dict(color='royalblue')))
                 fig_wave.update_layout(
-                    title=f'Raw Audio Waveform of {label}', font=dict(size=18)),
+                    title=f'Raw Audio Waveform of {label}', 
+                    font=dict(size=18),
                     xaxis_title='Time (s)', 
                     yaxis_title='Amplitude')
                 st.plotly_chart(fig_wave, use_container_width=True)
 
                 #Spectrogram
                 st.markdown("### Spectrogram")
-                D = librosa.amplitude_to_db(np.abs(librosa.stft(y)), ref=np.max)
-                fig_spec = go.Figure(data=go.Heatmap(z=D, colorscale='Viridis'))
+                S = librosa.stft(y)
+                D = librosa.amplitude_to_db(np.abs(S), ref=np.max)
+                frequencies = librosa.fft_frequencies(sr=sr)
+                times = librosa.frames_to_time(np.arange(S.shape[1]), sr=sr)
+                
+                fig_spec = go.Figure(data=go.Heatmap(
+                    z=D,
+                    x=times,
+                    y=frequencies,
+                    colorscale='Viridis'
+                ))
                 fig_spec.update_layout(
-                    title=f'Spectogram of {label}', font=dict(size=18)),
-                    xaxis_title="Time", 
-                    yaxis_title="Frequency (Hz)")
+                    title=f"Spectrogram of {label}",
+                    font=dict(size=18),
+                    xaxis_title="Time (s)",
+                    yaxis_title="Frequency (Hz)"
+                )
                 st.plotly_chart(fig_spec, use_container_width=True)
 
                 os.remove(temp_audio_path)
