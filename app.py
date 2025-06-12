@@ -1,4 +1,8 @@
 import streamlit as st
+
+# === Custom UI Styling ===
+st.set_page_config(page_title="Alarm Sound Classifier", layout="centered")
+
 import base64
 import numpy as np
 import librosa
@@ -13,9 +17,6 @@ import plotly.graph_objs as go
 from streamlit_option_menu import option_menu
 
 
-    
-# === Custom UI Styling ===
-st.set_page_config(page_title="Alarm Sound Classifier", layout="centered")
 
 # Define base64 function
 def get_base64_image(image_path):
