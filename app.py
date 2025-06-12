@@ -87,11 +87,11 @@ with st.sidebar:
             },
             "nav-link-selected": {
                 "background-color": "#699acd",
-                "color": "#6C63FF",
+                "color": "#f2f7fa",
                 "font-weight": "bold"
             },
             "menu-title": {
-                "color": "white",
+                "color": "#f2f7fa",
                 "font-size": "15px",
                 "font-weight": "bold",
                 "padding-bottom": "20px"
