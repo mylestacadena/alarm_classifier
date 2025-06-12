@@ -56,38 +56,42 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# === Top Navigation ===
+# === Top Navigation Bar ===
 selected_page = option_menu(
-    menu_title=None,  # You can set this to a string like "Alarm Sound Classifier" if needed
-    options=[
-        "Dashboard",
-        "Upload Audio File",
-        "Use Microphone",
-    ],
-    icons=[
-        "house", "file-earmark-arrow-down", "mic"],
+    menu_title="Alarm Sound Classifier",
+    options=["Dashboard", "Upload Audio File", "Use Microphone"],
+    icons=["house", "file-earmark-arrow-down", "mic"],
     menu_icon="cast",
     default_index=0,
     orientation="horizontal",
     styles={
         "container": {
-            "padding": "0!important",
+            "padding": "10px 0px 20px 0px",  # top right bottom left
             "background-color": "#164b82",
+            "justify-content": "center",
         },
-        "icon": {"color": "white", "font-size": "16px"},
+        "icon": {"color": "#f2f7fa", "font-size": "16px"},
         "nav-link": {
             "color": "#f2f7fa",
-            "font-size": "16px",
-            "padding": "10px 25px",
-            "margin": "0 5px",
-            "border-radius": "5px",
+            "font-size": "15px",
+            "margin": "0px 20px",  # space between nav items
+            "padding": "10px 20px",
+            "border-radius": "8px"
         },
         "nav-link-selected": {
             "background-color": "#699acd",
+            "color": "#ffffff",
+            "font-weight": "bold"
+        },
+        "menu-title": {
+            "color": "#ffffff",
+            "font-size": "20px",
             "font-weight": "bold",
+            "margin": "0px 20px 0px 0px"
         }
     }
 )
+
 
 
 
