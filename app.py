@@ -3,7 +3,7 @@ import numpy as np
 import librosa
 import joblib
 import os
-from streamlit_webrtc import webrtc_streamer, AudioProcessorBase, WebRtcMode
+from streamlit_webrtc import webrtc_streamer, AudioProcessorBase
 import av
 import tempfile
 
@@ -57,12 +57,10 @@ with tab1:
         except Exception as e:
             st.error(f"Error processing file: {e}")
 
-import soundfile as sf  # ⬅️ Add this import
-
 # === Microphone Tab ===
 with tab2:
     st.write("🎤 Record audio from your microphone (requires permission)")
-    
+
     class AudioProcessor(AudioProcessorBase):
         def __init__(self):
             self.frames = []
@@ -74,29 +72,31 @@ with tab2:
 
     ctx = webrtc_streamer(
         key="mic",
-        mode=WebRtcMode.SENDONLY,  # ✅ Use enum, not string
+        mode="SENDONLY",
         audio_receiver_size=512,
+        media_stream_constraints={"audio": True, "video": False},  # ✅ No client_settings
         rtc_configuration={
             "iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]
         },
         audio_processor_factory=AudioProcessor,
-        media_stream_constraints={"audio": True, "video": False}
     )
 
-    if ctx and ctx.state.audio_processor:
-        if st.button("🔍 Predict from Microphone Audio"):
-            audio_data = np.concatenate(ctx.state.audio_processor.frames)
-            if len(audio_data) == 0:
-                st.warning("No audio captured. Please speak into the mic.")
-            else:
-                temp_path = "mic_input.wav"
-                sf.write(temp_path, audio_data, 16000)  # ✅ Use soundfile here
+    if ctx and ctx.state.playing:
+        if hasattr(ctx.state, "audio_processor") and ctx.state.audio_processor:
+            if st.button("🔍 Predict from Microphone Audio"):
+                audio_data = np.concatenate(ctx.state.audio_processor.frames)
+                if len(audio_data) == 0:
+                    st.warning("No audio captured. Please speak into the mic.")
+                else:
+                    temp_path = "mic_input.wav"
+                    librosa.output.write_wav(temp_path, audio_data, sr=16000)
 
-                try:
-                    features = extract_features(temp_path)
-                    prediction = model.predict(features)
-                    label = label_encoder.inverse_transform(prediction)[0]
-                    st.success(f"Predicted Sound: **{label}**")
-                except Exception as e:
-                    st.error(f"Error processing mic input: {e}")
-
+                    try:
+                        features = extract_features(temp_path)
+                        prediction = model.predict(features)
+                        label = label_encoder.inverse_transform(prediction)[0]
+                        st.success(f"Predicted Sound: **{label}**")
+                    except Exception as e:
+                        st.error(f"Error processing mic input: {e}")
+        else:
+            st.info("🔄 Initializing microphone... please wait.")
