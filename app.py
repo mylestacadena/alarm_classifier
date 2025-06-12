@@ -12,10 +12,9 @@ import tempfile
 import plotly.graph_objs as go
 from streamlit_option_menu import option_menu
 
-# === Page Setup ===
+#Page setup
 st.set_page_config(page_title="Alarm Sound Classifier", layout="wide")
 
-# === Background Image ===
 def get_base64_image(image_path):
     with open(image_path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode()
@@ -32,7 +31,7 @@ st.markdown(f"""
     </style>
 """, unsafe_allow_html=True)
 
-# === Top Navigation Bar ===
+#Navigation bar
 selected_page = option_menu(
     menu_title="Alarm Sound Classifier",
     options=["Dashboard", "Audio File-based Sound Classification", "Mic-based Sound Classification"],
@@ -50,7 +49,7 @@ selected_page = option_menu(
         "nav-link": {
             "color": "#f2f7fa",
             "font-size": "13px",
-            "margin": "0px 15px",  # space between nav items
+            "margin": "0px 15px",  
             "padding": "10px 20px",
             "border-radius": "8px"
         },
@@ -68,10 +67,6 @@ selected_page = option_menu(
     }
 )
 
-
-
-
-# === Global Styling ===
 st.markdown("""
     <style>
     html, body, [class*="css"] {
@@ -118,13 +113,13 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# === Load Model & Encoder ===
+#Load model & encoder from Google Colab
 model = joblib.load("decision_tree_model.pkl")
 label_encoder = joblib.load("label_encoder.pkl")
 
-# === Feature Extraction ===
+#Feature extraction
 def extract_features(file_path):
-    y, sr = librosa.load(file_path, sr=None)  # Load at original sample rate
+    y, sr = librosa.load(file_path, sr=None)  
     if sr != 16000:
         st.warning("Resampling to 16kHz for processing.")
         y = librosa.resample(y, orig_sr=sr, target_sr=16000)
@@ -147,7 +142,7 @@ def extract_features(file_path):
         features[f"mfcc_{i+1}"] = np.mean(coeff)
     return np.array(list(features.values())).reshape(1, -1)
 
-# === Page Logic ===
+#Page logic
 if selected_page == "Dashboard":
     st.markdown("Welcome to the alarm sound classifier. Choose a mode on the left.")
 
@@ -164,8 +159,6 @@ elif selected_page == "Audio File-based Sound Classification":
         try:
             with st.spinner("Analyzing audio..."):
                 features = extract_features(temp_path)
-                
-                # Predict probabilities
                 probabilities = model.predict_proba(features)
                 prediction = model.predict(features)
                 label = label_encoder.inverse_transform(prediction)[0]
@@ -173,18 +166,13 @@ elif selected_page == "Audio File-based Sound Classification":
                 duration = librosa.get_duration(filename=temp_path)
                 st.write(f"Audio Duration: {round(duration, 2)} seconds")
 
-                st.markdown(f"### Predicted Sound: `{label}`")
+                st.markdown(f"<h3 style='font-size:18px;'>Predicted Sound: `{label}`</h3>", unsafe_allow_html=True)
                 
-                # === Load audio and generate spectrogram ===
                 y, sr = librosa.load(temp_path, sr=16000)
 
-                # === Display Interactive Raw Waveform ===
+                #Audio Waveform
                 st.markdown("### Raw Audio Waveform")
-                
-                # Generate time axis for the waveform
                 time_axis = np.linspace(0, len(y) / sr, num=len(y))
-                
-                # Create interactive plot with Plotly
                 fig_wave_interactive = go.Figure()
                 fig_wave_interactive.add_trace(go.Scatter(
                     x=time_axis,
@@ -195,7 +183,7 @@ elif selected_page == "Audio File-based Sound Classification":
                 ))
                 
                 fig_wave_interactive.update_layout(
-                    title=f'Raw Audio Waveform of: {label}',
+                    title=f'Raw Audio Waveform of {label}', font=dict(size=18)),
                     xaxis_title='Time (s)',
                     yaxis_title='Amplitude',
                     showlegend=False,
@@ -204,12 +192,12 @@ elif selected_page == "Audio File-based Sound Classification":
                 
                 st.plotly_chart(fig_wave_interactive, use_container_width=True)
 
-                # === Spectrogram ===
+                #Spectrogram
                 st.markdown("### Spectrogram")
                 D = librosa.amplitude_to_db(np.abs(librosa.stft(y)), ref=np.max)
                 fig_spec = go.Figure(data=go.Heatmap(z=D, colorscale='Viridis'))
                 fig_spec.update_layout(
-                    title=f'Spectogram of: {label}',
+                    title=f'Spectogram of {label}', font=dict(size=18)),
                     xaxis_title="Time (s)", 
                     yaxis_title="Frequency (Hz)")
                 st.plotly_chart(fig_spec, use_container_width=True)
@@ -218,10 +206,10 @@ elif selected_page == "Audio File-based Sound Classification":
             st.error(f"Error processing file: {e}")
 
 
+#Mic-based Sound Classification
 elif selected_page == "Mic-based Sound Classification":
     st.markdown("_Use your microphone to record and classify sounds in real-time or with manual analysis._")
 
-    # === Mic Input ===
     audio_value = st.audio_input("Record below")
 
     if audio_value:
@@ -241,31 +229,31 @@ elif selected_page == "Mic-based Sound Classification":
                 duration = librosa.get_duration(filename=temp_audio_path)
                 st.write(f"Audio Duration: {round(duration, 2)} seconds")
 
-                st.markdown(f"### Predicted Sound: `{label}`")
+                st.markdown(f"<h3 style='font-size:18px;'>Predicted Sound: `{label}`</h3>", unsafe_allow_html=True)
 
                 y, sr = librosa.load(temp_audio_path, sr=16000)
 
-                # Waveform
+                #Audio Waveform
+                st.markdown("### Raw Audio Waveform")
                 time_axis = np.linspace(0, len(y) / sr, num=len(y))
                 fig_wave = go.Figure()
                 fig_wave.add_trace(go.Scatter(x=time_axis, y=y, mode='lines', line=dict(color='royalblue')))
                 fig_wave.update_layout(
-                    title=f'Raw Audio Waveform of: {label}', 
+                    title=f'Raw Audio Waveform of {label}', font=dict(size=18)),
                     xaxis_title='Time (s)', 
                     yaxis_title='Amplitude')
                 st.plotly_chart(fig_wave, use_container_width=True)
 
-                # Spectrogram
+                #Spectrogram
                 st.markdown("### Spectrogram")
                 D = librosa.amplitude_to_db(np.abs(librosa.stft(y)), ref=np.max)
                 fig_spec = go.Figure(data=go.Heatmap(z=D, colorscale='Viridis'))
                 fig_spec.update_layout(
-                    title=f'Spectogram of: {label}',
+                    title=f'Spectogram of {label}', font=dict(size=18)),
                     xaxis_title="Time", 
                     yaxis_title="Frequency (Hz)")
                 st.plotly_chart(fig_spec, use_container_width=True)
 
-                # Optional: clean up
                 os.remove(temp_audio_path)
 
         except Exception as e:
