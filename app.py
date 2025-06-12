@@ -37,7 +37,7 @@ with st.sidebar:
     selected_page = option_menu(
         menu_title="Alarm Sound Classifier",
         options=[
-            "Home",
+            "Dashboard",
             "Upload Audio File",
             "Use Microphone",
         ],
@@ -54,7 +54,7 @@ with st.sidebar:
             },
             "icon": {"color": "white", "font-size": "18px"},
             "nav-link": {
-                "color": "#e0e0e0",
+                "color": "#6C63FF",
                 "font-size": "16px",
                 "text-align": "left",
                 "margin": "5px 0",
@@ -152,7 +152,7 @@ def extract_features(file_path):
     return np.array(list(features.values())).reshape(1, -1)
 
 # === Page Logic ===
-if selected_page == "Home":
+if selected_page == "Dashboard":
     st.markdown('<div class="app-title">Alarm Sound Classifier</div>', unsafe_allow_html=True)
     st.markdown("Welcome to the alarm sound classifier. Choose a mode on the left.")
 
