@@ -1,5 +1,0 @@
-streamlit
-tensorflow
-librosa
-soundfile
-numpy
