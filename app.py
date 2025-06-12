@@ -18,7 +18,7 @@ def get_base64_image(image_path):
         return base64.b64encode(img_file.read()).decode()
 
 # Load and inject background image
-base64_image = get_base64_image("background.png")
+base64_image = get_base64_image("bg.png")
 st.markdown(
     f"""
     <style>
