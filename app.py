@@ -42,7 +42,7 @@ selected_page = option_menu(
     orientation="horizontal",
     styles={
         "container": {
-            "padding": "10px 0px 20px 10px",  # top right bottom left
+            "padding": "10px 10px 20px 10px",  # top right bottom left
             "background-color": "#164b82",
             "justify-content": "center",
         },
