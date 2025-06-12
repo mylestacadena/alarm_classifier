@@ -63,7 +63,7 @@ selected_page = option_menu(
             "color": "#ffffff",
             "font-size": "20px",
             "font-weight": "bold",
-            "margin": "0px 20px 0px 0px"
+            "margin": "0px 20px 0px 20px"
         }
     }
 )
