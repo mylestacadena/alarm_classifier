@@ -195,7 +195,7 @@ elif selected_page == "Audio File-based Sound Classification":
                 ))
                 
                 fig_wave_interactive.update_layout(
-                    title='Interactive Audio Waveform',
+                    title=f'Raw Audio Waveform of: {label}',
                     xaxis_title='Time (s)',
                     yaxis_title='Amplitude',
                     showlegend=False,
@@ -208,7 +208,10 @@ elif selected_page == "Audio File-based Sound Classification":
                 st.markdown("### Spectrogram")
                 D = librosa.amplitude_to_db(np.abs(librosa.stft(y)), ref=np.max)
                 fig_spec = go.Figure(data=go.Heatmap(z=D, colorscale='Viridis'))
-                fig_spec.update_layout(title="Spectrogram", xaxis_title="Time", yaxis_title="Frequency (Hz)")
+                fig_spec.update_layout(
+                    title=f'Spectogram of: {label}',, 
+                    xaxis_title="Time (s)", 
+                    yaxis_title="Frequency (Hz)")
                 st.plotly_chart(fig_spec, use_container_width=True)
 
         except Exception as e:
@@ -246,14 +249,20 @@ elif selected_page == "Mic-based Sound Classification":
                 time_axis = np.linspace(0, len(y) / sr, num=len(y))
                 fig_wave = go.Figure()
                 fig_wave.add_trace(go.Scatter(x=time_axis, y=y, mode='lines', line=dict(color='royalblue')))
-                fig_wave.update_layout(title='Interactive Audio Waveform', xaxis_title='Time (s)', yaxis_title='Amplitude')
+                fig_wave.update_layout(
+                    title=f'Raw Audio Waveform of: {label}', 
+                    xaxis_title='Time (s)', 
+                    yaxis_title='Amplitude')
                 st.plotly_chart(fig_wave, use_container_width=True)
 
                 # Spectrogram
                 st.markdown("### Spectrogram")
                 D = librosa.amplitude_to_db(np.abs(librosa.stft(y)), ref=np.max)
                 fig_spec = go.Figure(data=go.Heatmap(z=D, colorscale='Viridis'))
-                fig_spec.update_layout(title="Spectrogram", xaxis_title="Time", yaxis_title="Frequency (Hz)")
+                fig_spec.update_layout(
+                    title=f'Spectogram of: {label}',, 
+                    xaxis_title="Time", 
+                    yaxis_title="Frequency (Hz)")
                 st.plotly_chart(fig_spec, use_container_width=True)
 
                 # Optional: clean up
