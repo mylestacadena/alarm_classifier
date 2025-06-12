@@ -1,6 +1,9 @@
 streamlit
-numpy
 librosa
 scikit-learn
+numpy
 joblib
-soundfile
+matplotlib
+seaborn
+streamlit-webrtc
+av
