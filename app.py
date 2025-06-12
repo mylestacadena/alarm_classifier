@@ -1,4 +1,5 @@
 import streamlit as st
+import base64
 import numpy as np
 import librosa
 import joblib
@@ -11,6 +12,26 @@ import tempfile
 import plotly.graph_objs as go
 from streamlit_option_menu import option_menu
 
+# Define base64 function
+def get_base64_image(image_path):
+    with open(image_path, "rb") as img_file:
+        return base64.b64encode(img_file.read()).decode()
+
+# Load and inject background image
+base64_image = get_base64_image("background.png")
+st.markdown(
+    f"""
+    <style>
+    .stApp {{
+        background-image: url("data:image/png;base64,{base64_image}");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True
+    
 # === Custom UI Styling ===
 st.set_page_config(page_title="Alarm Sound Classifier", layout="centered")
 
