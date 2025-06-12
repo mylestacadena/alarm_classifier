@@ -54,7 +54,7 @@ with st.sidebar:
             },
             "icon": {"color": "white", "font-size": "18px"},
             "nav-link": {
-                "color": "#6C63FF",
+                "color": "#e0e0e0",
                 "font-size": "16px",
                 "text-align": "left",
                 "margin": "5px 0",
