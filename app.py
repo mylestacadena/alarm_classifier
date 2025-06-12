@@ -31,6 +31,7 @@ st.markdown(
     </style>
     """,
     unsafe_allow_html=True
+)
     
 # === Custom UI Styling ===
 st.set_page_config(page_title="Alarm Sound Classifier", layout="centered")
@@ -193,7 +194,7 @@ if selected == "Upload Audio File":
                 fig.update_layout(
                     title="Spectrogram View",
                     xaxis_title="Time",
-                    yaxis_title="Frequency (log)",
+                    yaxis_title="Frequency (Hz)",
                     height=400
                 )
                 st.plotly_chart(fig, use_container_width=True)
