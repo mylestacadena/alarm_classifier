@@ -1,8 +1,10 @@
 streamlit
 streamlit-webrtc
 librosa
+scikit-learn
 soundfile
 numpy
-scikit-learn
 joblib
 av
+matplotlib
+pandas
