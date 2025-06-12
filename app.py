@@ -57,6 +57,8 @@ with tab1:
         except Exception as e:
             st.error(f"Error processing file: {e}")
 
+import soundfile as sf  # ⬅️ Add this import
+
 # === Microphone Tab ===
 with tab2:
     st.write("🎤 Record audio from your microphone (requires permission)")
@@ -74,11 +76,11 @@ with tab2:
         key="mic",
         mode="SENDONLY",
         audio_receiver_size=512,
-        client_settings={"media_stream_constraints": {"audio": True, "video": False}},
-        rtc_configuration={  # Use default STUN server
+        rtc_configuration={
             "iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]
         },
         audio_processor_factory=AudioProcessor,
+        media_stream_constraints={"audio": True, "video": False}  # ✅ Correct here
     )
 
     if ctx and ctx.state.audio_processor:
@@ -87,9 +89,8 @@ with tab2:
             if len(audio_data) == 0:
                 st.warning("No audio captured. Please speak into the mic.")
             else:
-                # Save to temporary file
                 temp_path = "mic_input.wav"
-                librosa.output.write_wav(temp_path, audio_data, sr=16000)
+                sf.write(temp_path, audio_data, 16000)  # ✅ Use soundfile here
 
                 try:
                     features = extract_features(temp_path)
@@ -98,3 +99,4 @@ with tab2:
                     st.success(f"Predicted Sound: **{label}**")
                 except Exception as e:
                     st.error(f"Error processing mic input: {e}")
+
