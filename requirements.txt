@@ -1,9 +1,8 @@
 streamlit
+streamlit-webrtc
 librosa
-scikit-learn
+soundfile
 numpy
+scikit-learn
 joblib
-matplotlib
-seaborn
-streamlit-webrtc>=0.43.0
 av
