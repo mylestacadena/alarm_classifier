@@ -5,5 +5,5 @@ numpy
 joblib
 matplotlib
 seaborn
-streamlit-webrtc
+streamlit-webrtc>=0.43.0
 av
