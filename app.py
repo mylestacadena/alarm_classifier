@@ -1,8 +1,4 @@
 import streamlit as st
-
-# === Custom UI Styling ===
-st.set_page_config(page_title="Alarm Sound Classifier", layout="centered")
-
 import base64
 import numpy as np
 import librosa
@@ -16,15 +12,16 @@ import tempfile
 import plotly.graph_objs as go
 from streamlit_option_menu import option_menu
 
-# Define base64 function
+# === Page Setup ===
+st.set_page_config(page_title="Alarm Sound Classifier", layout="centered")
+
+# === Background Image ===
 def get_base64_image(image_path):
     with open(image_path, "rb") as img_file:
         return base64.b64encode(img_file.read()).decode()
 
-# Load and inject background image
 base64_image = get_base64_image("bg.png")
-st.markdown(
-    f"""
+st.markdown(f"""
     <style>
     .stApp {{
         background-image: url("data:image/png;base64,{base64_image}");
@@ -33,80 +30,68 @@ st.markdown(
         background-attachment: fixed;
     }}
     </style>
-    """,
-    unsafe_allow_html=True
-)  
+""", unsafe_allow_html=True)
 
+# === Sidebar Navigation ===
 with st.sidebar:
-    st.markdown("""
-        <style>
-        .sidebar-container {
-            background-color: #6C63FF;
-            padding-top: 30px;
-            height: 100vh;
-            border-top-right-radius: 20px;
-            border-bottom-right-radius: 20px;
+    selected_page = option_menu(
+        menu_title="ēCoursie",
+        options=[
+            "Home",
+            "Upload Audio File",
+            "Use Microphone",
+            "Dashboard",
+            "All Courses",
+            "Messages",
+            "Friends",
+            "Schedule",
+            "Settings",
+            "Directory"
+        ],
+        icons=[
+            "house", "file-earmark-arrow-down", "mic",
+            "speedometer", "book", "envelope", "people",
+            "calendar", "gear", "folder"
+        ],
+        menu_icon="cast",
+        default_index=0,
+        orientation="vertical",
+        styles={
+            "container": {
+                "padding": "20px",
+                "background-color": "#6C63FF",
+                "border-radius": "20px",
+            },
+            "icon": {"color": "white", "font-size": "18px"},
+            "nav-link": {
+                "color": "#e0e0e0",
+                "font-size": "16px",
+                "text-align": "left",
+                "margin": "5px 0",
+                "border-radius": "10px",
+                "padding": "10px 15px"
+            },
+            "nav-link-selected": {
+                "background-color": "white",
+                "color": "#6C63FF",
+                "font-weight": "bold"
+            },
+            "menu-title": {
+                "color": "white",
+                "font-size": "24px",
+                "font-weight": "bold",
+                "padding-bottom": "20px"
+            }
         }
+    )
 
-        .sidebar-logo {
-            font-size: 24px;
-            font-weight: bold;
-            color: white;
-            margin-left: 10px;
-            margin-bottom: 40px;
-        }
-
-        .sidebar-menu {
-            list-style-type: none;
-            padding: 0;
-        }
-
-        .sidebar-menu li {
-            color: #e0e0e0;
-            padding: 12px 16px;
-            margin-bottom: 5px;
-            border-radius: 10px;
-            cursor: pointer;
-        }
-
-        .sidebar-menu li:hover {
-            background-color: #837aff;
-            color: white;
-        }
-
-        .sidebar-menu .active {
-            background-color: white;
-            color: #6C63FF;
-        }
-
-        </style>
-
-        <div class="sidebar-container">
-            <div class="sidebar-logo">ēCoursie</div>
-            <ul class="sidebar-menu">
-                <li class="active">Dashboard</li>
-                <li>All Courses</li>
-                <li>Messages</li>
-                <li>Friends</li>
-                <li>Schedule</li>
-                <li>Settings</li>
-                <li>Directory</li>
-            </ul>
-        </div>
-    """, unsafe_allow_html=True)
-
-
+# === Global Styling ===
 st.markdown("""
     <style>
     html, body, [class*="css"] {
         font-family: Arial, sans-serif;
         background-color: #fefae0;
     }
-
-    .stApp {
-        background-color: #fefae0;
-    }
-
     .app-title {
         text-align: center;
         font-size: 32px;
@@ -115,14 +100,6 @@ st.markdown("""
         margin-top: 10px;
         margin-bottom: 20px;
     }
-
-    .stTabs [data-baseweb="tab"] {
-        font-size: 18px;
-        font-weight: bold;
-        color: #5e503f;
-        font-family: Arial, sans-serif;
-    }
-
     .stButton > button {
         font-size: 16px;
         background-color: #DFD0B8;
@@ -131,22 +108,13 @@ st.markdown("""
         padding: 0.5em 1.5em;
         border: none;
     }
-
     .stButton > button:hover {
         background-color: #948979;
     }
-    </style>
-
-    <div class="app-title">Alarm Sound Classifier</div>
-""", unsafe_allow_html=True)
-
-st.markdown("""
-    <style>
     .result-box {
         background-color: #e6f4e6;
         padding: 15px 25px;
         border-radius: 10px;
-        font-family: Arial, sans-serif;
         font-size: 18px;
         margin-top: 10px;
         box-shadow: 2px 2px 6px rgba(0,0,0,0.05);
@@ -154,44 +122,20 @@ st.markdown("""
     </style>
 """, unsafe_allow_html=True)
 
-hide_menu_style = """
+# === Hide Streamlit Default UI ===
+st.markdown("""
     <style>
     #MainMenu {visibility: hidden;}
     footer {visibility: hidden;}
     header {visibility: hidden;}
     </style>
-"""
-st.markdown(hide_menu_style, unsafe_allow_html=True)
+""", unsafe_allow_html=True)
 
-# === Load Model & Label Encoder ===
+# === Load Model & Encoder ===
 model = joblib.load("decision_tree_model.pkl")
 label_encoder = joblib.load("label_encoder.pkl")
 
-# === Navigation Menu ===
-selected = option_menu(
-    menu_title=None,
-    options=["Home", "Upload Audio File", "Use Microphone"],
-    icons=["house", "file-earmark-arrow-down", "mic"],
-    menu_icon="cast",
-    default_index=0,
-    orientation="horizontal",
-)
-
-# === Home Section ===
-if selected == "Home":
-    st.markdown("Welcome to the..")
-
-# === Upload Audio File Section ===
-elif selected == "Upload Audio File":
-    # your tab1 content goes here
-    ...
-
-# === Use Microphone Section ===
-elif selected == "Use Microphone":
-    # your tab2 content goes here
-    ...
-
-# === Feature Extraction Function ===
+# === Feature Extraction ===
 def extract_features(file_path):
     y, sr = librosa.load(file_path, sr=16000)
     mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
@@ -208,18 +152,20 @@ def extract_features(file_path):
         "centroid": np.mean(spectral_centroid),
         "rolloff": np.mean(spectral_rolloff),
     }
-
     for i, coeff in enumerate(mfcc):
         features[f"mfcc_{i+1}"] = np.mean(coeff)
-
     return np.array(list(features.values())).reshape(1, -1)
 
+# === Page Logic ===
+if selected_page == "Home":
+    st.markdown('<div class="app-title">Alarm Sound Classifier</div>', unsafe_allow_html=True)
+    st.markdown("Welcome to the alarm sound classifier. Choose a mode on the left.")
 
-# === "Upload Audio File" Tab Content ===
-if selected == "Upload Audio File":
+elif selected_page == "Upload Audio File":
+    st.markdown('<div class="app-title">Upload Audio File</div>', unsafe_allow_html=True)
     st.markdown("_Upload a .wav file and see its predicted alarm type with visual analysis._")
-    uploaded_file = st.file_uploader("Upload a .wav file", type=["wav"])
 
+    uploaded_file = st.file_uploader("Upload a .wav file", type=["wav"])
     if uploaded_file:
         st.audio(uploaded_file, format="audio/wav")
         with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as tmp_file:
@@ -228,40 +174,22 @@ if selected == "Upload Audio File":
 
         try:
             with st.spinner("Analyzing audio..."):
-                # Extract features and make prediction
                 features = extract_features(temp_path)
                 prediction = model.predict(features)
                 label = label_encoder.inverse_transform(prediction)[0]
 
-                # Display Prediction Result
-                st.markdown('<div class="result-box">', unsafe_allow_html=True)
+                st.markdown('<div class="result-box">')
                 st.success(f"Predicted Sound: **{label}**")
                 st.markdown('</div>', unsafe_allow_html=True)
 
-                # Load audio for visualization
                 y, sr = librosa.load(temp_path, sr=16000)
                 D = librosa.amplitude_to_db(np.abs(librosa.stft(y)), ref=np.max)
-
-                # Plotly Spectrogram
-                fig = go.Figure(data=go.Heatmap(
-                    z=D,
-                    colorscale='Viridis',
-                    zmin=D.min(),
-                    zmax=D.max(),
-                    colorbar=dict(title='dB'),
-                ))
-                fig.update_layout(
-                    title="Spectrogram View",
-                    xaxis_title="Time",
-                    yaxis_title="Frequency (Hz)",
-                    height=400
-                )
+                fig = go.Figure(data=go.Heatmap(z=D, colorscale='Viridis'))
+                fig.update_layout(title="Spectrogram View", xaxis_title="Time", yaxis_title="Frequency (Hz)")
                 st.plotly_chart(fig, use_container_width=True)
-
         except Exception as e:
             st.error(f"Error processing file: {e}")
 
-    # 🔁 Sound Comparison Section
     st.markdown("### 🔁 Compare with Sample Alarms")
     if st.checkbox("Enable Sample Comparison"):
         sample_choice = st.selectbox("Choose a sample sound", ["Fire Alarm", "Car Horn", "Dog Bark"])
@@ -269,13 +197,11 @@ if selected == "Upload Audio File":
         if os.path.exists(sample_path):
             st.audio(sample_path, format="audio/wav")
         else:
-            st.warning("Sample file not found. Please check your samples directory.")
+            st.warning("Sample file not found.")
 
-
-# === "Use Microphone" Tab Content ===
-elif selected == "Use Microphone":
+elif selected_page == "Use Microphone":
+    st.markdown('<div class="app-title">Use Microphone</div>', unsafe_allow_html=True)
     st.markdown("_Use your microphone to record and classify sounds in real-time._")
-    st.write("Record audio from your microphone (requires permission)")
 
     class AudioProcessor(AudioProcessorBase):
         def __init__(self):
@@ -295,18 +221,15 @@ elif selected == "Use Microphone":
         audio_processor_factory=AudioProcessor,
     )
 
-    if ctx and ctx.state.playing and hasattr(ctx.state, "audio_processor") and ctx.state.audio_processor:
+    if ctx and ctx.state.playing and hasattr(ctx.state, "audio_processor"):
         st.write(f"Captured frames: {len(ctx.state.audio_processor.frames)}")
-
         if st.button("Predict from Microphone Audio"):
             audio_data = np.concatenate(ctx.state.audio_processor.frames)
-
             if len(audio_data) < 16000:
-                st.warning("Captured audio is too short. Please try again.")
+                st.warning("Captured audio is too short.")
             else:
                 temp_path = "mic_input.wav"
                 sf.write(temp_path, audio_data, 16000)
-
                 try:
                     with st.spinner("Analyzing audio..."):
                         features = extract_features(temp_path)
@@ -318,3 +241,18 @@ elif selected == "Use Microphone":
                 finally:
                     ctx.state.audio_processor.frames.clear()
 
+# === Placeholder Pages ===
+elif selected_page == "Dashboard":
+    st.markdown("### 📊 Dashboard\nWelcome to the ēCoursie dashboard.")
+elif selected_page == "All Courses":
+    st.markdown("### 📚 All Courses\nHere are all available courses.")
+elif selected_page == "Messages":
+    st.markdown("### ✉️ Messages\nCheck your messages.")
+elif selected_page == "Friends":
+    st.markdown("### 👥 Friends\nManage your friends here.")
+elif selected_page == "Schedule":
+    st.markdown("### 📅 Schedule\nView your course schedule.")
+elif selected_page == "Settings":
+    st.markdown("### ⚙️ Settings\nUpdate your settings.")
+elif selected_page == "Directory":
+    st.markdown("### 📁 Directory\nExplore the course directory.")
