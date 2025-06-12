@@ -10,7 +10,6 @@ from streamlit_webrtc import webrtc_streamer, AudioProcessorBase, WebRtcMode
 import av
 import tempfile
 import plotly.graph_objs as go
-from streamlit_option_menu import option_menu
 
 # === Page Setup ===
 st.set_page_config(page_title="Alarm Sound Classifier", layout="centered")
