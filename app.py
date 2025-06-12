@@ -37,6 +37,65 @@ st.markdown(
     unsafe_allow_html=True
 )  
 
+with st.sidebar:
+    st.markdown("""
+        <style>
+        .sidebar-container {
+            background-color: #6C63FF;
+            padding-top: 30px;
+            height: 100vh;
+            border-top-right-radius: 20px;
+            border-bottom-right-radius: 20px;
+        }
+
+        .sidebar-logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: white;
+            margin-left: 10px;
+            margin-bottom: 40px;
+        }
+
+        .sidebar-menu {
+            list-style-type: none;
+            padding: 0;
+        }
+
+        .sidebar-menu li {
+            color: #e0e0e0;
+            padding: 12px 16px;
+            margin-bottom: 5px;
+            border-radius: 10px;
+            cursor: pointer;
+        }
+
+        .sidebar-menu li:hover {
+            background-color: #837aff;
+            color: white;
+        }
+
+        .sidebar-menu .active {
+            background-color: white;
+            color: #6C63FF;
+        }
+
+        </style>
+
+        <div class="sidebar-container">
+            <div class="sidebar-logo">ēCoursie</div>
+            <ul class="sidebar-menu">
+                <li class="active">Dashboard</li>
+                <li>All Courses</li>
+                <li>Messages</li>
+                <li>Friends</li>
+                <li>Schedule</li>
+                <li>Settings</li>
+                <li>Directory</li>
+            </ul>
+        </div>
+    """, unsafe_allow_html=True)
+
+
 st.markdown("""
     <style>
     html, body, [class*="css"] {
