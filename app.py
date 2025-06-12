@@ -35,7 +35,7 @@ st.markdown(f"""
 # === Sidebar Navigation ===
 with st.sidebar:
     selected_page = option_menu(
-        menu_title="ēCoursie",
+        menu_title="Alarm Sound Classifier",
         options=[
             "Home",
             "Upload Audio File",
@@ -111,6 +111,16 @@ st.markdown("""
     }
     </style>
 """, unsafe_allow_html=True)
+
+hide_menu_style = """
+    <style>
+    #MainMenu {visibility: hidden;}
+    footer {visibility: hidden;}
+    header {visibility: hidden;}
+    </style>
+"""
+st.markdown(hide_menu_style, unsafe_allow_html=True)
+
 
 # === Load Model & Encoder ===
 model = joblib.load("decision_tree_model.pkl")
@@ -230,18 +240,4 @@ elif selected_page == "Use Microphone":
                 finally:
                     ctx.state.audio_processor.frames.clear()
 
-# === Placeholder Pages ===
-elif selected_page == "Dashboard":
-    st.markdown("### 📊 Dashboard\nWelcome to the ēCoursie dashboard.")
-elif selected_page == "All Courses":
-    st.markdown("### 📚 All Courses\nHere are all available courses.")
-elif selected_page == "Messages":
-    st.markdown("### ✉️ Messages\nCheck your messages.")
-elif selected_page == "Friends":
-    st.markdown("### 👥 Friends\nManage your friends here.")
-elif selected_page == "Schedule":
-    st.markdown("### 📅 Schedule\nView your course schedule.")
-elif selected_page == "Settings":
-    st.markdown("### ⚙️ Settings\nUpdate your settings.")
-elif selected_page == "Directory":
-    st.markdown("### 📁 Directory\nExplore the course directory.")
+
