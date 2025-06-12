@@ -51,17 +51,23 @@ st.markdown("""
     .stButton > button:hover {
         background-color: #948979;
     }
-
-    .result-box {
-        background-color: #ffffff;
-        padding: 20px;
-        border-radius: 12px;
-        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        margin-top: 20px;
-    }
     </style>
 
     <div class="app-title">Alarm Sound Classifier</div>
+""", unsafe_allow_html=True)
+
+st.markdown("""
+    <style>
+    .result-box {
+        background-color: #e6f4e6;
+        padding: 15px 25px;
+        border-radius: 10px;
+        font-family: Arial, sans-serif;
+        font-size: 18px;
+        margin-top: 10px;
+        box-shadow: 2px 2px 6px rgba(0,0,0,0.05);
+    }
+    </style>
 """, unsafe_allow_html=True)
 
 # === Load Model & Label Encoder ===
