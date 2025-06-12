@@ -69,10 +69,10 @@ with st.sidebar:
             "house", "file-earmark-arrow-down", "mic"],
         menu_icon="cast",
         default_index=0,
-        orientation="horizontal",
+        orientation="vertical",
         styles={
             "container": {
-                "padding": "20px",
+                "padding": "25px",
                 "background-color": "#164b82",
             },
             "icon": {"color": "white", "font-size": "13px"},
