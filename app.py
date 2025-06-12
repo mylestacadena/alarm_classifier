@@ -43,7 +43,7 @@ selected_page = option_menu(
     styles={
         "container": {
             "padding": "10px 10px 20px 10px",  # top right bottom left
-            "background-color": "#e4b795",
+            "background-color": "#2f679f",
             "justify-content": "center",
         },
         "icon": {"color": "#f2f7fa", "font-size": "13px"},
@@ -55,7 +55,7 @@ selected_page = option_menu(
             "border-radius": "8px"
         },
         "nav-link-selected": {
-            "background-color": "#699acd",
+            "background-color": "#e4b795",
             "color": "#ffffff",
             "font-weight": "bold"
         },
