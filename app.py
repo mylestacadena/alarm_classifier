@@ -50,7 +50,7 @@ selected_page = option_menu(
         "nav-link": {
             "color": "#f2f7fa",
             "font-size": "13px",
-            "margin": "0px 20px",  # space between nav items
+            "margin": "0px 15px",  # space between nav items
             "padding": "10px 20px",
             "border-radius": "8px"
         },
