@@ -217,36 +217,37 @@ elif selected_page == "Mic-based Sound Classification":
     st.markdown('<div class="app-title">🎙️ Mic-based Sound Classification</div>', unsafe_allow_html=True)
     st.markdown("_Use your microphone to record and classify sounds in real-time or with manual analysis._")
 
-    # === Live Prediction Setup ===
-    st.title("🎙️ Mic-based Sound Classification")
+    # === Mic Input ===
+    st.title("🎧 Record Audio for Classification")
 
-# 1. Record audio from mic
-audio_value = st.audio_input("🎧 Record a voice message")
+    # 1. Record audio from mic
+    audio_value = st.audio_input("🎤 Click below to record a voice message")
 
-# 2. Check if something was recorded
-if audio_value:
-    st.audio(audio_value, format='audio/wav')
+    # 2. Check if something was recorded
+    if audio_value:
+        st.audio(audio_value, format='audio/wav')
 
-    # 3. Save temporarily and load for processing
-    with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_audio:
-        temp_audio.write(audio_value.getvalue())
-        temp_audio_path = temp_audio.name
+        # 3. Save temporarily and load for processing
+        with tempfile.NamedTemporaryFile(delete=False, suffix=".wav") as temp_audio:
+            temp_audio.write(audio_value.getvalue())
+            temp_audio_path = temp_audio.name
 
-    # 4. Extract features and classify
-    try:
-        # Load and extract audio features
-        y, sr = librosa.load(temp_audio_path, sr=16000)
-        # Replace this with your actual feature extraction
-        features = extract_features(temp_audio_path)  # Should return a (1, N) array
+        # 4. Extract features and classify
+        try:
+            # Load and extract audio features
+            y, sr = librosa.load(temp_audio_path, sr=16000)
+            features = extract_features(temp_audio_path)  # Should return a (1, N) array
 
-        prediction = model.predict(features)
-        probabilities = model.predict_proba(features)
+            # Run model prediction
+            prediction = model.predict(features)
+            probabilities = model.predict_proba(features)
 
-        label = label_encoder.inverse_transform(prediction)[0]
-        confidence = np.max(probabilities) * 100
+            # Decode label and confidence
+            label = label_encoder.inverse_transform(prediction)[0]
+            confidence = np.max(probabilities) * 100
 
-        st.success(f"✅ Predicted Sound: **{label}**")
-        st.info(f"🔍 Confidence: {confidence:.2f}%")
+            st.success(f"✅ Predicted Sound: **{label}**")
+            st.info(f"🔍 Confidence: {confidence:.2f}%")
 
-    except Exception as e:
-        st.error(f"🚨 Error processing audio: {e}")
+        except Exception as e:
+            st.error(f"🚨 Error processing audio: {e}")
