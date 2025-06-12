@@ -109,15 +109,15 @@ st.markdown("""
     }
     .app-title {
         text-align: center;
-        font-size: 32px;
+        font-size: 40px;
         font-weight: bold;
-        color: #5e503f;
+        color: #164b82;
         margin-top: 10px;
         margin-bottom: 20px;
     }
     .stButton > button {
         font-size: 16px;
-        background-color: #DFD0B8;
+        background-color: #f2f7fa;
         color: white;
         border-radius: 10px;
         padding: 0.5em 1.5em;
