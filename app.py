@@ -14,20 +14,22 @@ st.set_page_config(page_title="Alarm Sound Classifier", layout="centered")
 
 st.markdown("""
     <style>
-    html, body, [class*="css"]  {
-        background-color: #f9f9f9;
-        font-family: 'Segoe UI', sans-serif;
+    body {
+        background-color: #fdf6e3; /* Creamy beige */
     }
 
-    h1 {
-        color: #1f3c88;
-        text-align: center;
+    .stApp {
+        background-color: #fdf6e3;
     }
 
-    .stTabs [data-baseweb="tab"] {
-        font-size: 18px;
+    .app-title {
+        position: absolute;
+        top: 10px;
+        left: 20px;
+        font-size: 24px;
         font-weight: bold;
         color: #1f3c88;
+        z-index: 100;
     }
 
     .stButton > button {
@@ -44,12 +46,21 @@ st.markdown("""
         transition: background-color 0.3s ease;
     }
 
-    .stMarkdown, .stText {
-        font-size: 16px;
+    .stTabs [data-baseweb="tab"] {
+        font-size: 18px;
+        font-weight: bold;
+        color: #1f3c88;
     }
 
+    h1 {
+        text-align: center;
+        color: #1f3c88;
+        font-size: 32px;
+    }
     </style>
 """, unsafe_allow_html=True)
+
+st.markdown('<div class="app-title">Alarm Sound Classifier</div>', unsafe_allow_html=True)
 
 
 
@@ -82,7 +93,6 @@ def extract_features(file_path):
     return np.array(list(features.values())).reshape(1, -1)
 
 # === UI Title ===
-st.title("🔊 Real-Time Alarm Sound Classifier")
 
 tab1, tab2 = st.tabs(["📁 Upload Audio File", "🎤 Use Microphone"])
 
