@@ -26,7 +26,7 @@ if uploaded_file:
 
         mfcc_input = extract_mfcc(audio_data, sr=sample_rate)
 
-        interpreter = load_model("your_model.tflite")
+        interpreter = load_model("alarm_classifier.lite")
         input_details = interpreter.get_input_details()
         output_details = interpreter.get_output_details()
 
