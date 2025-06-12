@@ -32,6 +32,29 @@ st.markdown(f"""
     </style>
 """, unsafe_allow_html=True)
 
+# === Fix Sidebar Background ===
+st.markdown("""
+    <style>
+    /* Make the Streamlit sidebar area fully blue */
+    section[data-testid="stSidebar"] {
+        background-color: #164b82 !important;
+        padding-top: 2rem;
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    /* Ensure sidebar content background is transparent */
+    .css-1d391kg, .css-1v3fvcr {
+        background-color: transparent !important;
+    }
+
+    /* Optional: reduce margin from main content */
+    .block-container {
+        padding-top: 1rem;
+    }
+    </style>
+""", unsafe_allow_html=True)
+
 # === Sidebar Navigation ===
 with st.sidebar:
     selected_page = option_menu(
