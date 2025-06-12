@@ -51,6 +51,14 @@ st.markdown("""
     .stButton > button:hover {
         background-color: #948979;
     }
+
+    .result-box {
+        background-color: #ffffff;
+        padding: 20px;
+        border-radius: 12px;
+        box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        margin-top: 20px;
+    }
     </style>
 
     <div class="app-title">Alarm Sound Classifier</div>
@@ -97,21 +105,26 @@ with tab1:
             tmp_file.write(uploaded_file.read())
             temp_path = tmp_file.name
 
-        try:
-            with st.spinner("Analyzing audio..."):
-                features = extract_features(temp_path)
-                prediction = model.predict(features)
-                label = label_encoder.inverse_transform(prediction)[0]
-                st.success(f"🎯 Predicted Sound: **{label}**")
+    try:
+        with st.spinner("Analyzing audio..."):
+            features = extract_features(temp_path)
+            prediction = model.predict(features)
+            label = label_encoder.inverse_transform(prediction)[0]
 
-                # Optional waveform
-                y, sr = librosa.load(temp_path, sr=16000)
-                fig, ax = plt.subplots()
-                ax.plot(y)
-                ax.set_title("Waveform")
-                ax.set_xlabel("Sample")
-                ax.set_ylabel("Amplitude")
-                st.pyplot(fig)
+            with st.container():
+                st.markdown('<div class="result-box">', unsafe_allow_html=True)
+                st.success(f"🎯 Predicted Sound: **{label}**")
+                st.markdown('</div>', unsafe_allow_html=True)
+
+            # Spectrogram
+            y, sr = librosa.load(temp_path, sr=16000)
+            D = librosa.amplitude_to_db(np.abs(librosa.stft(y)), ref=np.max)
+            fig, ax = plt.subplots(figsize=(8, 4))
+            img = librosa.display.specshow(D, sr=sr, x_axis='time', y_axis='log', ax=ax)
+            ax.set_title("Live Spectrogram")
+            fig.colorbar(img, ax=ax, format="%+2.0f dB")
+            st.pyplot(fig)
+
 
         except Exception as e:
             st.error(f"❌ Error processing file: {e}")
