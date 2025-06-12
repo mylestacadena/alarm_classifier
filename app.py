@@ -39,7 +39,6 @@ st.markdown(f"""
         <img src="data:image/png;base64,{base64_image}" style="width:100%;">
     </div>
 """, unsafe_allow_html=True)
-)  
 
 st.markdown("""
     <style>
