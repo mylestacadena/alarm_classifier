@@ -16,8 +16,6 @@ import tempfile
 import plotly.graph_objs as go
 from streamlit_option_menu import option_menu
 
-
-
 # Define base64 function
 def get_base64_image(image_path):
     with open(image_path, "rb") as img_file:
@@ -25,21 +23,19 @@ def get_base64_image(image_path):
 
 # Load and inject background image
 base64_image = get_base64_image("bg.png")
-
-
-st.markdown(f"""
-    <div style="
-        width: 100%;
-        height: 400px;
-        overflow: auto;
-        border: 1px solid #ccc;
-        border-radius: 8px;
-        padding: 5px;
-        background-color: white;">
-        <img src="data:image/png;base64,{base64_image}" style="width:100%;">
-
-    </div>
-""", unsafe_allow_html=True)
+st.markdown(
+    f"""
+    <style>
+    .stApp {{
+        background-image: url("data:image/png;base64,{base64_image}");
+        background-size: cover;
+        background-repeat: no-repeat;
+        background-attachment: fixed;
+    }}
+    </style>
+    """,
+    unsafe_allow_html=True
+)  
 
 st.markdown("""
     <style>
