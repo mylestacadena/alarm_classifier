@@ -56,47 +56,39 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 
-# === Sidebar Navigation ===
-with st.sidebar:
-    selected_page = option_menu(
-        menu_title="Alarm Sound Classifier",
-        options=[
-            "Dashboard",
-            "Upload Audio File",
-            "Use Microphone",
-        ],
-        icons=[
-            "house", "file-earmark-arrow-down", "mic"],
-        menu_icon="cast",
-        default_index=0,
-        orientation="vertical",
-        styles={
-            "container": {
-                "padding": "30px",
-                "background-color": "#164b82",
-            },
-            "icon": {"color": "white", "font-size": "13px"},
-            "nav-link": {
-                "color": "#f2f7fa",
-                "font-size": "13px",
-                "text-align": "left",
-                "margin": "5px 0",
-                "border-radius": "10px",
-                "padding": "10px 15px"
-            },
-            "nav-link-selected": {
-                "background-color": "#699acd",
-                "color": "#f2f7fa",
-                "font-weight": "bold"
-            },
-            "menu-title": {
-                "color": "#f2f7fa",
-                "font-size": "15px",
-                "font-weight": "bold",
-                "padding-bottom": "20px"
-            }
+# === Top Navigation ===
+selected_page = option_menu(
+    menu_title=None,  # You can set this to a string like "Alarm Sound Classifier" if needed
+    options=[
+        "Dashboard",
+        "Upload Audio File",
+        "Use Microphone",
+    ],
+    icons=[
+        "house", "file-earmark-arrow-down", "mic"],
+    menu_icon="cast",
+    default_index=0,
+    orientation="horizontal",
+    styles={
+        "container": {
+            "padding": "0!important",
+            "background-color": "#164b82",
+        },
+        "icon": {"color": "white", "font-size": "16px"},
+        "nav-link": {
+            "color": "#f2f7fa",
+            "font-size": "16px",
+            "padding": "10px 25px",
+            "margin": "0 5px",
+            "border-radius": "5px",
+        },
+        "nav-link-selected": {
+            "background-color": "#699acd",
+            "font-weight": "bold",
         }
-    )
+    }
+)
+
 
 
 # === Global Styling ===
