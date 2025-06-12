@@ -120,8 +120,7 @@ selected = option_menu(
 
 # === Home Section ===
 if selected == "Home":
-    st.title("🔊 Smart Audio Classifier")
-    st.markdown("Welcome to the Audio Classification App. Select an option above to begin.")
+    st.markdown("Welcome to the..")
 
 # === Upload Audio File Section ===
 elif selected == "Upload Audio File":
@@ -238,7 +237,7 @@ elif selected == "Use Microphone":
     )
 
     if ctx and ctx.state.playing and hasattr(ctx.state, "audio_processor") and ctx.state.audio_processor:
-        st.write(f"🎧 Captured frames: {len(ctx.state.audio_processor.frames)}")
+        st.write(f"Captured frames: {len(ctx.state.audio_processor.frames)}")
 
         if st.button("Predict from Microphone Audio"):
             audio_data = np.concatenate(ctx.state.audio_processor.frames)
