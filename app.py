@@ -25,18 +25,20 @@ def get_base64_image(image_path):
 
 # Load and inject background image
 base64_image = get_base64_image("bg.png")
-st.markdown(
-    f"""
-    <style>
-    .stApp {{
-        background-image: url("data:image/png;base64,{base64_image}");
-        background-size: cover;
-        background-repeat: no-repeat;
-        background-attachment: fixed;
-    }}
-    </style>
-    """,
-    unsafe_allow_html=True
+
+
+st.markdown(f"""
+    <div style="
+        width: 100%;
+        height: 400px;
+        overflow: auto;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        padding: 5px;
+        background-color: white;">
+        <img src="data:image/png;base64,{base64_image}" style="width:100%;">
+    </div>
+""", unsafe_allow_html=True)
 )  
 
 st.markdown("""
