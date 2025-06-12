@@ -42,7 +42,7 @@ selected_page = option_menu(
     orientation="horizontal",
     styles={
         "container": {
-            "padding": "10px 0px 20px 0px",  # top right bottom left
+            "padding": "10px 20px 20px 20px",  # top right bottom left
             "background-color": "#2f679f",
             "justify-content": "center",
         },
@@ -50,7 +50,7 @@ selected_page = option_menu(
         "nav-link": {
             "color": "#f2f7fa",
             "font-size": "13px",
-            "margin": "0px 20px",  # space between nav items
+            "margin": "0px 16px",  # space between nav items
             "padding": "10px 20px",
             "border-radius": "8px"
         },
