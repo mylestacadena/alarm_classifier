@@ -3,7 +3,7 @@ import numpy as np
 import librosa
 import joblib
 import os
-from streamlit_webrtc import webrtc_streamer, AudioProcessorBase
+from streamlit_webrtc import webrtc_streamer, AudioProcessorBase, WebRtcMode
 import av
 import tempfile
 
@@ -72,9 +72,9 @@ with tab2:
 
     ctx = webrtc_streamer(
         key="mic",
-        mode="SENDONLY",
+        mode=WebRtcMode.SENDONLY,
         audio_receiver_size=512,
-        media_stream_constraints={"audio": True, "video": False},  # ✅ No client_settings
+        media_stream_constraints={"audio": True, "video": False},
         rtc_configuration={
             "iceServers": [{"urls": ["stun:stun.l.google.com:19302"]}]
         },
