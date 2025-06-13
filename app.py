@@ -119,30 +119,28 @@ label_encoder = joblib.load("label_encoder.pkl")
 
 #Feature extraction
 def extract_features(file_path):
-    # Load audio
-    y, sr = librosa.load(file_path, sr=None)
-
-    # Resample to 16 kHz if needed
+    y, sr = librosa.load(file_path, sr=None)  
     if sr != 16000:
         st.warning("Resampling to 16kHz for processing.")
         y = librosa.resample(y, orig_sr=sr, target_sr=16000)
         sr = 16000
-
-    # 1. MFCCs (13)
     mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
-    mfcc_means = [np.mean(coeff) for coeff in mfcc]
-
-    # 2. Duration (1)
+    spectral_centroid = librosa.feature.spectral_centroid(y=y, sr=sr)
+    spectral_rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr)
+    zero_crossings = librosa.feature.zero_crossing_rate(y)
+    rms = librosa.feature.rms(y=y)
     duration = librosa.get_duration(y=y, sr=sr)
 
-    # 3. Average Spectral Peak (approximated using spectral centroid) (1)
-    spectral_centroid = librosa.feature.spectral_centroid(y=y, sr=sr)
-    avg_spectral_centroid = np.mean(spectral_centroid)
-
-    # Combine all features into a 1D array
-    features = mfcc_means + [duration, avg_spectral_centroid]
-    
-    return np.array(features).reshape(1, -1)
+    features = {
+        "duration": duration,
+        "zcr": np.mean(zero_crossings),
+        "rms": np.mean(rms),
+        "centroid": np.mean(spectral_centroid),
+        "rolloff": np.mean(spectral_rolloff),
+    }
+    for i, coeff in enumerate(mfcc):
+        features[f"mfcc_{i+1}"] = np.mean(coeff)
+    return np.array(list(features.values())).reshape(1, -1)
 
 #Page logic
 if selected_page == "Dashboard":
