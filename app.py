@@ -153,66 +153,62 @@ def extract_features(file_path):
     return np.array(list(features.values())).reshape(1, -1)
 
     
-#Page logic
 if selected_page == "Dashboard":
-    st.markdown(
-        """
-        <div style='background-color: rgba(255, 255, 255, 0.6); padding: 20px; border-radius: 10px;'>
-            <h2 style='text-align: center;'>Alarm Sound Classifier</h2>
-            <p>Welcome to the <strong>Alarm Sound Classifier</strong>!</p>
-            <p>This is a machine learning-powered web application designed to identify and classify common emergency sounds, such as <strong>school bells</strong> and <strong>fire alarms</strong>. It can assist in developing smart monitoring systems, safety automation, and noise-based alert mechanisms.</p>
-            
-            <p>This app is built for <strong>simplicity</strong>, <strong>speed</strong>, and <strong>clarity</strong>. It allows users to:</p>
-            <ul>
-                <li>Upload audio files <em>(.wav format)</em></li>
-                <li>Record live audio using a microphone</li>
-                <li>Analyze and classify the sound in real time</li>
-                <li>View interactive graphs for verification</li>
-            </ul>
+    st.markdown("""
+    <div style='background-color: rgba(255, 255, 255, 0.6); padding: 20px; border-radius: 10px;'>
+        <p>Welcome to the <strong>Alarm Sound Classifier</strong>!</p>
+        <p>This is a machine learning-powered web application designed to identify and classify common emergency sounds, such as <strong>school bells</strong> and <strong>fire alarms</strong>. It can assist in developing smart monitoring systems, safety automation, and noise-based alert mechanisms.</p>
+    </div>
+    """, unsafe_allow_html=True)
 
-            <h4>🔍 How it works:</h4>
-            <ol>
-                <li><strong>Sound Input Options</strong><br>
-                    Choose from two methods to submit your audio:
-                    <ul>
-                        <li><strong>Audio File-based Classification</strong> – Upload a .wav file that contains a school bell or fire alarm.</li>
-                        <li><strong>Mic-based Classification</strong> – Record a sound directly from your device’s microphone.</li>
-                    </ul>
-                </li>
-                <li><strong>Feature Extraction</strong><br>
-                    Once an audio file is uploaded or recorded, the app:
-                    <ul>
-                        <li>Processes the audio using <strong>Librosa</strong></li>
-                        <li>Extracts key audio features such as:
-                            <ul>
-                                <li><strong>MFCCs</strong> – Mel-Frequency Cepstral Coefficients, capturing the timbral texture of the sound</li>
-                                <li><strong>Spectral Centroid</strong> – The "center of mass" of the spectrum</li>
-                                <li><strong>Spectral Rolloff</strong> – The frequency below which most spectral energy lies</li>
-                                <li><strong>Duration</strong> – Total length of the audio</li>
-                                <li><strong>Spectral Peaks</strong> – Count of significant frequency peaks</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-                <li><strong>Sound Classification</strong><br>
-                    The extracted features are fed into a <strong>pre-trained Decision Tree Classifier</strong> that:
-                    <ul>
-                        <li>Recognizes the sound patterns of school bells and fire alarms</li>
-                        <li>Generates:
-                            <ul>
-                                <li><strong>Waveform Plot</strong> – Displays the raw amplitude over time</li>
-                                <li><strong>Spectrogram</strong> – Shows how frequencies change over time</li>
-                            </ul>
-                        </li>
-                    </ul>
-                </li>
-            </ol>
+    st.markdown("""
+    This machine learning-powered app identifies emergency sounds like **school bells** and **fire alarms**.  
+    It helps in smart monitoring systems, safety automation, and noise-based alert detection.
 
-            <p style='margin-top: 20px;'><em>Use the navigation tabs above to start uploading or recording your alarm sounds!</em></p>
-        </div>
-        """, 
-        unsafe_allow_html=True
-    )
+    Built for **simplicity**, **speed**, and **clarity**, this app allows you to:
+
+    - 📂 Upload audio files (`.wav`)  
+    - 🎙️ Record live audio from your microphone  
+    - 📊 Analyze sounds and get real-time classification  
+    - 📈 View waveform and spectrogram visualizations  
+    """)
+
+    with st.expander("🔍 How it Works", expanded=True):
+        st.markdown("### 1️⃣ Sound Input Options")
+        st.markdown("""
+        Choose one of the two sound input methods:
+
+        - 📁 **Audio File-based Classification**  
+          Upload a `.wav` file of a school bell or fire alarm.
+
+        - 🎤 **Mic-based Classification**  
+          Record sound in real time using your microphone.
+        """)
+
+        st.markdown("### 2️⃣ Feature Extraction")
+        st.markdown("""
+        After you provide the sound input:
+
+        - The app processes the audio using **Librosa**, a Python library for music and audio analysis.
+        - Key audio features are extracted:
+          - 🎼 **MFCCs** – Captures the timbral texture of the sound.
+          - 🎯 **Spectral Centroid** – Represents the "center of mass" of the spectrum.
+          - 🌀 **Spectral Rolloff** – Frequency below which most spectral energy lies.
+          - ⏱️ **Duration** – Total length of the audio.
+          - 🔺 **Spectral Peaks** – Number of significant frequency peaks.
+        """)
+
+        st.markdown("### 3️⃣ Sound Classification")
+        st.markdown("""
+        - Extracted features are passed to a **pre-trained Decision Tree Classifier**.
+        - The model recognizes audio patterns typical of fire alarms and school bells.
+        - Visual feedback is provided to verify predictions:
+          - 📊 **Waveform Plot** – Raw amplitude over time.
+          - 🌈 **Spectrogram** – Frequency distribution over time.
+        """)
+
+    st.markdown("<hr>", unsafe_allow_html=True)
+    st.markdown("📌 *Use the navigation tabs above to upload or record your alarm sounds!*")
 
 elif selected_page == "Audio File-based Sound Classification":
     st.markdown("_Upload a .wav file of SCHOOL BELL or FIRE ALARM for classification._")
@@ -241,7 +237,7 @@ elif selected_page == "Audio File-based Sound Classification":
                     st.warning("Audio is too short (less than 1 second). Please upload a longer file.")
                     st.stop()
 
-                # --- 1. Waveform ---
+                #Waveform
                 st.markdown("### Raw Audio Waveform")
                 time_axis = np.linspace(0, len(y) / sr, num=len(y))
                 fig_wave = go.Figure()
@@ -256,7 +252,7 @@ elif selected_page == "Audio File-based Sound Classification":
                 )
                 st.plotly_chart(fig_wave, use_container_width=True)
 
-                # --- 2. Spectrogram ---
+                #Spectrogram
                 st.markdown("### Spectrogram")
                 S = librosa.stft(y)
                 D = librosa.amplitude_to_db(np.abs(S), ref=np.max)
@@ -274,19 +270,19 @@ elif selected_page == "Audio File-based Sound Classification":
                     margin=dict(l=40, r=40, t=40, b=40))
                 st.plotly_chart(fig_spec, use_container_width=True)
 
-                # --- 3. Prediction Confidence ---
+                #Prediction confidence
                 st.markdown("### Prediction Confidence")
                 prob_dict = dict(zip(label_encoder.classes_, probabilities[0]))
                 fig_prob = go.Figure([go.Bar(x=list(prob_dict.keys()), y=list(prob_dict.values()))])
                 fig_prob.update_layout(
-                    title="Prediction Confidence",
+                    title="Prediction Confidence of {label}",
                     yaxis=dict(title="Probability", range=[0, 1]),
                     xaxis=dict(title="Class"),
                     bargap=0.3
                 )
                 st.plotly_chart(fig_prob, use_container_width=True)
 
-                # --- 4. Extracted Features ---
+                #Extracted features
                 with st.expander("See Extracted Features"):
                     feature_names = ["duration", "centroid", "rolloff", "num_peaks"] + [f"mfcc_{i+1}" for i in range(13)]
                     feature_dict = dict(zip(feature_names, features.flatten()))
@@ -325,7 +321,7 @@ elif selected_page == "Mic-based Sound Classification":
                     st.warning("Audio is too short (less than 1 second). Please try recording a longer sound.")
                     st.stop()
                 
-                # --- 1. Waveform ---
+                #Waveform
                 st.markdown("### Raw Audio Waveform")
                 time_axis = np.linspace(0, len(y) / sr, num=len(y))
                 fig_wave = go.Figure()
@@ -340,7 +336,7 @@ elif selected_page == "Mic-based Sound Classification":
                 )
                 st.plotly_chart(fig_wave, use_container_width=True)
 
-                # --- 2. Spectrogram ---
+                #Spectrogram
                 st.markdown("### Spectrogram")
                 S = librosa.stft(y)
                 D = librosa.amplitude_to_db(np.abs(S), ref=np.max)
@@ -358,19 +354,19 @@ elif selected_page == "Mic-based Sound Classification":
                     margin=dict(l=40, r=40, t=40, b=40))
                 st.plotly_chart(fig_spec, use_container_width=True)
 
-                # --- 3. Prediction Confidence ---
+                #Prediction confidence
                 st.markdown("### Prediction Confidence")
                 prob_dict = dict(zip(label_encoder.classes_, probabilities[0]))
                 fig_prob = go.Figure([go.Bar(x=list(prob_dict.keys()), y=list(prob_dict.values()))])
                 fig_prob.update_layout(
-                    title="Prediction Confidence",
+                    title="Prediction Confidence of {label}",
                     yaxis=dict(title="Probability", range=[0, 1]),
                     xaxis=dict(title="Class"),
                     bargap=0.3
                 )
                 st.plotly_chart(fig_prob, use_container_width=True)
 
-                # --- 4. Extracted Features ---
+                #Extracted features
                 with st.expander("See Extracted Features"):
                     feature_names = ["duration", "centroid", "rolloff", "num_peaks"] + [f"mfcc_{i+1}" for i in range(13)]
                     feature_dict = dict(zip(feature_names, features.flatten()))
