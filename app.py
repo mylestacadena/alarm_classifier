@@ -153,60 +153,61 @@ def extract_features(file_path):
     return np.array(list(features.values())).reshape(1, -1)
 
 if selected_page == "Dashboard":
-st.markdown("""
-<div style='background-color: rgba(255, 255, 255, 0.6); padding: 25px; border-radius: 15px;'>
+    st.markdown("""
+    <div style='background-color: rgba(255, 255, 255, 0.6); padding: 25px; border-radius: 15px;'>
 
-<h2>Welcome to the <strong>Alarm Sound Classifier!</strong></h2>
+    <h2>Welcome to the <strong>Alarm Sound Classifier!</strong></h2>
 
-<p>This is a machine learning-powered web application designed to identify and classify common emergency sounds, such as <strong>school bells</strong> and <strong>fire alarms</strong>.</p>
+    <p>This is a machine learning-powered web application designed to identify and classify common emergency sounds, such as <strong>school bells</strong> and <strong>fire alarms</strong>.</p>
 
-<p>It can assist in developing smart monitoring systems, safety automation, and noise-based alert mechanisms.</p>
+    <p>It can assist in developing smart monitoring systems, safety automation, and noise-based alert mechanisms.</p>
 
-<p><strong>Built for simplicity, speed, and clarity</strong>, this app allows you to:</p>
-<ul>
-    <li>📂 Upload audio files (<code>.wav</code>)</li>
-    <li>🎙️ Record live audio from your microphone</li>
-    <li>📊 Analyze sounds and get real-time classification</li>
-    <li>📈 View waveform and spectrogram visualizations</li>
-</ul>
-
-<hr>
-
-<h3>🔍 How it Works</h3>
-
-<h4>1️⃣ Sound Input Options</h4>
-<ul>
-    <li><strong>Audio File-based Classification</strong> – Upload a <code>.wav</code> file of a school bell or fire alarm.</li>
-    <li><strong>Mic-based Classification</strong> – Record sound in real time using your microphone.</li>
-</ul>
-
-<h4>2️⃣ Feature Extraction</h4>
-<p>After sound input, the app processes audio using <strong>Librosa</strong> to extract features like:</p>
-<ul>
-    <li>🎼 <strong>MFCCs</strong> – Sound texture</li>
-    <li>🎯 <strong>Spectral Centroid</strong> – Brightness of sound</li>
-    <li>🌀 <strong>Spectral Rolloff</strong> – Energy cutoff frequency</li>
-    <li>⏱️ <strong>Duration</strong> – Total audio length</li>
-    <li>🔺 <strong>Spectral Peaks</strong> – Key frequency spikes</li>
-</ul>
-
-<h4>3️⃣ Sound Classification</h4>
-<ul>
-    <li>Features are sent to a <strong>Decision Tree Classifier</strong> trained on alarm sounds.</li>
-    <li>The model identifies whether the sound is a <strong>fire alarm</strong> or <strong>school bell</strong>.</li>
-    <li>Visual output includes:</li>
+    <p><strong>Built for simplicity, speed, and clarity</strong>, this app allows you to:</p>
     <ul>
-        <li>📊 <strong>Waveform Plot</strong> – Amplitude over time</li>
-        <li>🌈 <strong>Spectrogram</strong> – Frequency over time</li>
+        <li>📂 Upload audio files (<code>.wav</code>)</li>
+        <li>🎙️ Record live audio from your microphone</li>
+        <li>📊 Analyze sounds and get real-time classification</li>
+        <li>📈 View waveform and spectrogram visualizations</li>
     </ul>
-</ul>
 
-<hr>
+    <hr>
 
-<p>📌 <em>Use the navigation tabs above to upload or record your alarm sounds!</em></p>
+    <h3>🔍 How it Works</h3>
 
-</div>
-""", unsafe_allow_html=True)
+    <h4>1️⃣ Sound Input Options</h4>
+    <ul>
+        <li><strong>Audio File-based Classification</strong> – Upload a <code>.wav</code> file of a school bell or fire alarm.</li>
+        <li><strong>Mic-based Classification</strong> – Record sound in real time using your microphone.</li>
+    </ul>
+
+    <h4>2️⃣ Feature Extraction</h4>
+    <p>After sound input, the app processes audio using <strong>Librosa</strong> to extract features like:</p>
+    <ul>
+        <li>🎼 <strong>MFCCs</strong> – Sound texture</li>
+        <li>🎯 <strong>Spectral Centroid</strong> – Brightness of sound</li>
+        <li>🌀 <strong>Spectral Rolloff</strong> – Energy cutoff frequency</li>
+        <li>⏱️ <strong>Duration</strong> – Total audio length</li>
+        <li>🔺 <strong>Spectral Peaks</strong> – Key frequency spikes</li>
+    </ul>
+
+    <h4>3️⃣ Sound Classification</h4>
+    <ul>
+        <li>Features are sent to a <strong>Decision Tree Classifier</strong> trained on alarm sounds.</li>
+        <li>The model identifies whether the sound is a <strong>fire alarm</strong> or <strong>school bell</strong>.</li>
+        <li>Visual output includes:</li>
+        <ul>
+            <li>📊 <strong>Waveform Plot</strong> – Amplitude over time</li>
+            <li>🌈 <strong>Spectrogram</strong> – Frequency over time</li>
+        </ul>
+    </ul>
+
+    <hr>
+
+    <p>📌 <em>Use the navigation tabs above to upload or record your alarm sounds!</em></p>
+
+    </div>
+    """, unsafe_allow_html=True)
+
 
 elif selected_page == "Audio File-based Sound Classification":
     st.markdown("_Upload a .wav file of SCHOOL BELL or FIRE ALARM for classification._")
@@ -273,7 +274,7 @@ elif selected_page == "Audio File-based Sound Classification":
                 prob_dict = dict(zip(label_encoder.classes_, probabilities[0]))
                 fig_prob = go.Figure([go.Bar(x=list(prob_dict.keys()), y=list(prob_dict.values()))])
                 fig_prob.update_layout(
-                    title="Prediction Confidence of {label}",
+                    title=f"Prediction Confidence of {label}",
                     yaxis=dict(title="Probability", range=[0, 1]),
                     xaxis=dict(title="Class"),
                     bargap=0.3
@@ -357,7 +358,7 @@ elif selected_page == "Mic-based Sound Classification":
                 prob_dict = dict(zip(label_encoder.classes_, probabilities[0]))
                 fig_prob = go.Figure([go.Bar(x=list(prob_dict.keys()), y=list(prob_dict.values()))])
                 fig_prob.update_layout(
-                    title="Prediction Confidence of {label}",
+                    title=f"Prediction Confidence of {label}",
                     yaxis=dict(title="Probability", range=[0, 1]),
                     xaxis=dict(title="Class"),
                     bargap=0.3
