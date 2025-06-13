@@ -209,22 +209,18 @@ elif selected_page == "Audio File-based Sound Classification":
                 st.write(f"Audio Duration: {round(duration, 2)} seconds")
 
                 st.markdown(f"<h3 style='font-size:18px;'>Predicted Sound: {label}</h3>", unsafe_allow_html=True)
-                
-                y, sr = librosa.load(temp_path, sr=16000)
 
-                #Audio Waveform
+                y, sr = librosa.load(temp_path, sr=16000)
+                if duration < 1.0:
+                    st.warning("Audio is too short (less than 1 second). Please upload a longer file.")
+                    st.stop()
+
+                # --- 1. Waveform ---
                 st.markdown("### Raw Audio Waveform")
                 time_axis = np.linspace(0, len(y) / sr, num=len(y))
-                fig_wave_interactive = go.Figure()
-                fig_wave_interactive.add_trace(go.Scatter(
-                    x=time_axis,
-                    y=y,
-                    mode='lines',
-                    name='Waveform',
-                    line=dict(color='royalblue')
-                ))
-                
-                fig_wave_interactive.update_layout(
+                fig_wave = go.Figure()
+                fig_wave.add_trace(go.Scatter(x=time_axis, y=y, mode='lines', line=dict(color='royalblue')))
+                fig_wave.update_layout(
                     title=f'Raw Audio Waveform of {label}',
                     font=dict(size=18),
                     xaxis_title='Time (s)',
@@ -232,34 +228,47 @@ elif selected_page == "Audio File-based Sound Classification":
                     showlegend=False,
                     margin=dict(l=40, r=40, t=40, b=40)
                 )
-                
-                st.plotly_chart(fig_wave_interactive, use_container_width=True)
+                st.plotly_chart(fig_wave, use_container_width=True)
 
-                #Spectrogram
+                # --- 2. Spectrogram ---
                 st.markdown("### Spectrogram")
                 S = librosa.stft(y)
                 D = librosa.amplitude_to_db(np.abs(S), ref=np.max)
                 frequencies = librosa.fft_frequencies(sr=sr)
                 times = librosa.frames_to_time(np.arange(S.shape[1]), sr=sr)
-                
                 fig_spec = go.Figure(data=go.Heatmap(
                     z=D,
                     x=times,
                     y=frequencies,
-                    colorscale='Viridis'
-                ))
+                    colorscale='Viridis'))
                 fig_spec.update_layout(
                     title=f"Spectrogram of {label}",
-                    font=dict(size=18),
-                    xaxis_title="Time (s)",
-                    yaxis_title="Frequency (Hz)"
-                )
+                    xaxis_title='Time (s)',
+                    yaxis_title='Frequency (Hz)',
+                    margin=dict(l=40, r=40, t=40, b=40))
                 st.plotly_chart(fig_spec, use_container_width=True)
 
-                os.remove(temp_path)
+                # --- 3. Prediction Confidence ---
+                st.markdown("### Prediction Confidence")
+                prob_dict = dict(zip(label_encoder.classes_, probabilities[0]))
+                fig_prob = go.Figure([go.Bar(x=list(prob_dict.keys()), y=list(prob_dict.values()))])
+                fig_prob.update_layout(
+                    title="Prediction Confidence",
+                    yaxis=dict(title="Probability", range=[0, 1]),
+                    xaxis=dict(title="Class"),
+                    bargap=0.3
+                )
+                st.plotly_chart(fig_prob, use_container_width=True)
+
+                # --- 4. Extracted Features ---
+                with st.expander("See Extracted Features"):
+                    feature_names = ["duration", "centroid", "rolloff", "num_peaks"] + [f"mfcc_{i+1}" for i in range(13)]
+                    feature_dict = dict(zip(feature_names, features.flatten()))
+                    st.json(feature_dict)
 
         except Exception as e:
-            st.error(f"Error processing file: {e}")
+            st.error(f"An error occurred while processing the audio file: {e}")
+
 
 
 #Mic-based Sound Classification
@@ -286,40 +295,61 @@ elif selected_page == "Mic-based Sound Classification":
                 st.markdown(f"<h3 style='font-size:18px;'>Predicted Sound: {label}</h3>", unsafe_allow_html=True)
 
                 y, sr = librosa.load(temp_audio_path, sr=16000)
-
-                #Audio Waveform
+                if duration < 1.0:
+                    st.warning("Audio is too short (less than 1 second). Please try recording a longer sound.")
+                    st.stop()
+                
+                # --- 1. Waveform ---
                 st.markdown("### Raw Audio Waveform")
                 time_axis = np.linspace(0, len(y) / sr, num=len(y))
                 fig_wave = go.Figure()
                 fig_wave.add_trace(go.Scatter(x=time_axis, y=y, mode='lines', line=dict(color='royalblue')))
                 fig_wave.update_layout(
-                    title=f'Raw Audio Waveform of {label}', 
+                    title=f'Raw Audio Waveform of {label}',
                     font=dict(size=18),
-                    xaxis_title='Time (s)', 
-                    yaxis_title='Amplitude')
+                    xaxis_title='Time (s)',
+                    yaxis_title='Amplitude',
+                    showlegend=False,
+                    margin=dict(l=40, r=40, t=40, b=40)
+                )
                 st.plotly_chart(fig_wave, use_container_width=True)
 
-                #Spectrogram
+                # --- 2. Spectrogram ---
                 st.markdown("### Spectrogram")
                 S = librosa.stft(y)
                 D = librosa.amplitude_to_db(np.abs(S), ref=np.max)
                 frequencies = librosa.fft_frequencies(sr=sr)
                 times = librosa.frames_to_time(np.arange(S.shape[1]), sr=sr)
-                
                 fig_spec = go.Figure(data=go.Heatmap(
                     z=D,
                     x=times,
                     y=frequencies,
-                    colorscale='Viridis'
-                ))
+                    colorscale='Viridis'))
                 fig_spec.update_layout(
                     title=f"Spectrogram of {label}",
-                    font=dict(size=18),
-                    xaxis_title="Time (s)",
-                    yaxis_title="Frequency (Hz)"
-                )
+                    xaxis_title='Time (s)',
+                    yaxis_title='Frequency (Hz)',
+                    margin=dict(l=40, r=40, t=40, b=40))
                 st.plotly_chart(fig_spec, use_container_width=True)
 
+                # --- 3. Prediction Confidence ---
+                st.markdown("### Prediction Confidence")
+                prob_dict = dict(zip(label_encoder.classes_, probabilities[0]))
+                fig_prob = go.Figure([go.Bar(x=list(prob_dict.keys()), y=list(prob_dict.values()))])
+                fig_prob.update_layout(
+                    title="Prediction Confidence",
+                    yaxis=dict(title="Probability", range=[0, 1]),
+                    xaxis=dict(title="Class"),
+                    bargap=0.3
+                )
+                st.plotly_chart(fig_prob, use_container_width=True)
+
+                # --- 4. Extracted Features ---
+                with st.expander("See Extracted Features"):
+                    feature_names = ["duration", "centroid", "rolloff", "num_peaks"] + [f"mfcc_{i+1}" for i in range(13)]
+                    feature_dict = dict(zip(feature_names, features.flatten()))
+                    st.json(feature_dict)
+                
                 os.remove(temp_audio_path)
 
         except Exception as e:
