@@ -118,7 +118,7 @@ st.markdown("""
 model = joblib.load("decision_tree_model.pkl")
 label_encoder = joblib.load("label_encoder.pkl")
 
-# Feature extraction
+#Feature extraction
 def extract_features(file_path):
     y, sr = librosa.load(file_path, sr=None)  
     if sr != 16000:
@@ -130,8 +130,8 @@ def extract_features(file_path):
     mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
     spectral_centroid = librosa.feature.spectral_centroid(y=y, sr=sr)
     spectral_rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr)
-    zero_crossings = librosa.feature.zero_crossing_rate(y)
-    rms = librosa.feature.rms(y=y)
+    # zero_crossings = librosa.feature.zero_crossing_rate(y)  # Removed
+    # rms = librosa.feature.rms(y=y)  # Removed
     duration = librosa.get_duration(y=y, sr=sr)
 
     # === Spectral peaks ===
@@ -143,16 +143,15 @@ def extract_features(file_path):
     # Compile features
     features = {
         "duration": duration,
-        "zcr": np.mean(zero_crossings),
-        "rms": np.mean(rms),
         "centroid": np.mean(spectral_centroid),
         "rolloff": np.mean(spectral_rolloff),
-        "num_peaks": num_peaks  # New feature added
+        "num_peaks": num_peaks
     }
     for i, coeff in enumerate(mfcc):
         features[f"mfcc_{i+1}"] = np.mean(coeff)
 
     return np.array(list(features.values())).reshape(1, -1)
+
     
 #Page logic
 if selected_page == "Dashboard":
