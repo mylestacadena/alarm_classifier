@@ -152,7 +152,7 @@ def extract_features(file_path):
 
     return np.array(list(features.values())).reshape(1, -1)
 
-    
+if selected_page == "Dashboard":
 st.markdown("""
 <div style='background-color: rgba(255, 255, 255, 0.6); padding: 25px; border-radius: 15px;'>
 
