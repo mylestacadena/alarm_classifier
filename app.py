@@ -11,6 +11,7 @@ import av
 import tempfile
 import plotly.graph_objs as go
 from streamlit_option_menu import option_menu
+from scipy.signal import find_peaks
 
 #Page setup
 st.set_page_config(page_title="Alarm Sound Classifier", layout="wide")
@@ -117,13 +118,15 @@ st.markdown("""
 model = joblib.load("decision_tree_model.pkl")
 label_encoder = joblib.load("label_encoder.pkl")
 
-#Feature extraction
+# Feature extraction
 def extract_features(file_path):
     y, sr = librosa.load(file_path, sr=None)  
     if sr != 16000:
         st.warning("Resampling to 16kHz for processing.")
         y = librosa.resample(y, orig_sr=sr, target_sr=16000)
         sr = 16000
+
+    # Extract features
     mfcc = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
     spectral_centroid = librosa.feature.spectral_centroid(y=y, sr=sr)
     spectral_rolloff = librosa.feature.spectral_rolloff(y=y, sr=sr)
@@ -131,17 +134,26 @@ def extract_features(file_path):
     rms = librosa.feature.rms(y=y)
     duration = librosa.get_duration(y=y, sr=sr)
 
+    # === Spectral peaks ===
+    S = np.abs(librosa.stft(y))  # Magnitude spectrogram
+    avg_spectrum = np.mean(S, axis=1)  # Average spectrum over time
+    peaks, _ = find_peaks(avg_spectrum)  # Find spectral peaks
+    num_peaks = len(peaks)  # Number of spectral peaks
+
+    # Compile features
     features = {
         "duration": duration,
         "zcr": np.mean(zero_crossings),
         "rms": np.mean(rms),
         "centroid": np.mean(spectral_centroid),
         "rolloff": np.mean(spectral_rolloff),
+        "num_peaks": num_peaks  # New feature added
     }
     for i, coeff in enumerate(mfcc):
         features[f"mfcc_{i+1}"] = np.mean(coeff)
-    return np.array(list(features.values())).reshape(1, -1)
 
+    return np.array(list(features.values())).reshape(1, -1)
+    
 #Page logic
 if selected_page == "Dashboard":
     st.markdown("""
