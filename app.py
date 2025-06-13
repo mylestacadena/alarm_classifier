@@ -195,7 +195,7 @@ if selected_page == "Dashboard":
             <ul>
                 <li><strong>Waveform plot</strong> – This is a time-domain graph showing amplitude fluctuations. It helps visualize the intensity and temporal structure of the sound signal.</li>
                 <li><strong>Spectrogram</strong> – This is a time-frequency visualization that shows how the spectral density of the signal varies over time. This reveals pitch, harmonics, and changes in tone, making it useful for identifying patterns unique to alarms or bells.</li>
-                <li>strong>Prediction confidence</strong> – After the classification is complete, a bar chart is shown to represent the confidence levels of the model's prediction. This helps users see how certain the model is about its decision.</li>
+                <li><strong>Prediction confidence</strong> – After the classification is complete, a bar chart is shown to represent the confidence levels of the model's prediction. This helps users see how certain the model is about its decision.</li>
             </ul>
         </li>
     </ul>
