@@ -156,7 +156,7 @@ def extract_features(file_path):
 st.markdown("""
 <div style='background-color: rgba(255, 255, 255, 0.6); padding: 25px; border-radius: 15px;'>
 
-<h2>🔔 Welcome to the <strong>Alarm Sound Classifier</strong></h2>
+<h2>Welcome to the <strong>Alarm Sound Classifier!</strong></h2>
 
 <p>This is a machine learning-powered web application designed to identify and classify common emergency sounds, such as <strong>school bells</strong> and <strong>fire alarms</strong>.</p>
 
