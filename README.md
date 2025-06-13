@@ -1,16 +1,10 @@
-# 🔊 Alarm Sound Classifier
+#Alarm Sound Classifier
 
-A Streamlit web app that classifies alarm sounds (e.g., fire alarm, school bell) using a TFLite model.
+This is a machine learning-powered web application designed to identify and classify common emergency sounds, such as school bells and fire alarms.
+It can assist in developing smart monitoring systems, safety automation, and noise-based alert mechanisms, which allow users to:
 
-## 🚀 Features
-- Upload `.wav` files
-- Extract MFCC features
-- Run inference with a TensorFlow Lite model
-- Display predicted alarm type
+• Upload audio files (.wav format)
+• Record live audio using a microphone
+• Analyze and classify the sound in real time
+• View interactive graphs for verification
 
-## 🛠 Setup
-
-```bash
-git clone https://github.com/yourname/alarm_sound_classifier.git
-cd alarm_sound_classifier
-pip install -r requirements.txt
