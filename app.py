@@ -190,7 +190,7 @@ if selected_page == "Dashboard":
         <li><strong>Spectral Peaks</strong> – Count of significant frequency peaks</li>
     </ul>
     
-        <h4>3. Sound Classification</h4>
+    <h4>3. Sound Classification</h4>
     <p>The extracted features are fed into a <strong>pre-trained Decision Tree Classifier</strong> that:</p>
     <ul>
         <li>Recognizes the sound patterns of school bells and fire alarms</li>
@@ -198,7 +198,8 @@ if selected_page == "Dashboard":
             <ul>
                 <li><strong>Waveform Plot</strong> – Displays the raw amplitude over time</li>
                 <li><strong>Spectrogram</strong> – Shows how frequencies change over time</li>
-        </ul>
+            </ul>
+        </li>
     </ul>
 
     <hr>
@@ -207,6 +208,7 @@ if selected_page == "Dashboard":
 
     </div>
     """, unsafe_allow_html=True)
+
 
 
 elif selected_page == "Audio File-based Sound Classification":
