@@ -14,7 +14,7 @@ from streamlit_option_menu import option_menu
 from scipy.signal import find_peaks
 
 #Page setup
-st.set_page_config(page_title="Alarm Sound Classifier", layout="wide")
+st.set_page_config(page_title="Real-Time Alarm Sound Classifier", layout="wide")
 
 def get_base64_image(image_path):
     with open(image_path, "rb") as img_file:
@@ -34,7 +34,7 @@ st.markdown(f"""
 
 #Navigation bar
 selected_page = option_menu(
-    menu_title="Alarm Sound Classifier",
+    menu_title="Real-Time Alarm Sound Classifier",
     options=["Dashboard", "Audio File-based Sound Classification", "Mic-based Sound Classification"],
     icons=["house", "file-earmark-arrow-down", "mic"],
     menu_icon="volume-up-fill",
@@ -154,7 +154,7 @@ if selected_page == "Dashboard":
     st.markdown("""
     <div style='background-color: rgba(255, 255, 255, 0.6); padding: 25px; border-radius: 15px;'>
 
-    <h2>Welcome to the <strong>Alarm Sound Classifier!</strong></h2>
+    <h2>Welcome to the <strong>Real-Time Alarm Sound Classifier!</strong></h2>
 
     <p>This is a machine learning-powered web application designed to identify and classify common emergency sounds, such as <strong>school bells</strong> and <strong>fire alarms</strong>.</p>
 
