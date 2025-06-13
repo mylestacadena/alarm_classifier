@@ -284,7 +284,7 @@ elif selected_page == "Audio File-based Sound Classification":
                     feature_dict = dict(zip(feature_names, features.flatten()))
                     st.json(feature_dict)
                     
-                os.remove(temp_audio_path)
+                os.remove(temp_path)
                 
         except Exception as e:
             st.error(f"An error occurred while processing the audio file: {e}")
