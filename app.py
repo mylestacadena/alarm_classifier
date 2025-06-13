@@ -133,14 +133,12 @@ def extract_features(file_path):
     # zero_crossings = librosa.feature.zero_crossing_rate(y)  # Removed
     # rms = librosa.feature.rms(y=y)  # Removed
     duration = librosa.get_duration(y=y, sr=sr)
-
-    # === Spectral peaks ===
     S = np.abs(librosa.stft(y))  # Magnitude spectrogram
     avg_spectrum = np.mean(S, axis=1)  # Average spectrum over time
     peaks, _ = find_peaks(avg_spectrum)  # Find spectral peaks
     num_peaks = len(peaks)  # Number of spectral peaks
 
-    # Compile features
+    #Compile features
     features = {
         "duration": duration,
         "centroid": np.mean(spectral_centroid),
@@ -160,9 +158,7 @@ if selected_page == "Dashboard":
 
     <p>This is a machine learning-powered web application designed to identify and classify common emergency sounds, such as <strong>school bells</strong> and <strong>fire alarms</strong>.</p>
 
-    <p>It can assist in developing smart monitoring systems, safety automation, and noise-based alert mechanisms.</p>
-
-    <p>This app is built for <strong>simplicity</strong>, <strong>speed</strong>, and <strong>clarity</strong>. It allows users to:</p>
+    <p>It can assist in developing smart monitoring systems, safety automation, and noise-based alert mechanisms, which allow users to:</p>
      <ul>
         <li>Upload audio files <em>(.wav format)</em></li>
         <li>Record live audio using a microphone</li>
@@ -176,28 +172,29 @@ if selected_page == "Dashboard":
 
     <h4>1. Sound input options</h4>
     <ul>
-        <li><strong>Audio File-based Classification</strong> – Upload a <code>.wav</code> file of a school bell or fire alarm.</li>
-        <li><strong>Mic-based Classification</strong> – Record sound in real time using your microphone.</li>
+        <li><strong>Audio File-based Classification</strong> – To upload a <code>.wav</code> file of a school bell or fire alarm.</li>
+        <li><strong>Mic-based Classification</strong> – To record sound in real time using your microphone.</li>
     </ul>
 
-    <h4>2. Feature Extraction</h4>
-    <p>Once an audio file is uploaded or recorded, the system processes the sound using <strong>Librosa</strong> and extracts key features such as:</p>
+    <h4>2. Feature extraction</h4>
+    <p>Once an audio file is uploaded or recorded, the system processes the sound using <strong>Librosa</strong>. The audio signal is first pre-processed—converted to mono, normalized, and trimmed for silence—before feature extraction begins.</p>
+    <p>The following acoustic features are extracted to help the model understand and differentiate between various types of alarm sounds:</p>
     <ul>
-        <li><strong>MFCCs</strong> – Mel-Frequency Cepstral Coefficients, capturing the timbral texture of the sound</li>
-        <li><strong>Spectral Centroid</strong> – The "center of mass" of the spectrum</li>
-        <li><strong>Spectral Rolloff</strong> – The frequency below which most spectral energy lies</li>
-        <li><strong>Duration</strong> – Total length of the audio</li>
-        <li><strong>Spectral Peaks</strong> – Count of significant frequency peaks</li>
+        <li><strong>MFCCs (Mel-Frequency Cepstral Coefficients)</strong> – This captures the short-term power spectrum of the sound based on human auditory perception. It’s especially useful in distinguishing timbre and is a key feature in audio classification tasks.</li>
+        <li><strong>Spectral Centroid</strong> – This indicates where the "center of gravity" of the frequency spectrum lies. A higher centroid typically implies a brighter sound.</li>
+        <li><strong>Spectral Rolloff</strong> – This represents the frequency below which a certain percentage (typically 85-95%) of the total spectral energy is contained. It helps in distinguishing between sharp and mellow sounds.</li>
+        <li><strong>Duration</strong> – This measures the total length of the audio clip in seconds. Alarms and bells often have different length patterns which can be used to aid classification.</li>
+        <li><strong>Spectral Peaks</strong> – This counts the prominent frequency peaks to determine the harmonic structure and tonal content of the sound.</li>
     </ul>
     
-    <h4>3. Sound Classification</h4>
-    <p>The extracted features are fed into a <strong>pre-trained Decision Tree Classifier</strong> that:</p>
+    <h4>3. Sound classification</h4>
+    <p>Once all relevant features are extracted, they are fed into a <strong>pre-trained Decision Tree Classifier</strong>. This classifier was trained using a curated dataset of school bells and fire alarm recordings in order to:</p>
     <ul>
-        <li>Recognizes the sound patterns of school bells and fire alarms</li>
-        <li>Generates visualizations to help verify the classification, including:
+        <li>Recognize the sound patterns of school bells and fire alarms to make accurate predictions</li>
+        <li>Generate visualizations to help verify the classification, including:
             <ul>
-                <li><strong>Waveform Plot</strong> – Displays the raw amplitude over time</li>
-                <li><strong>Spectrogram</strong> – Shows how frequencies change over time</li>
+                <li><strong>Waveform Plot</strong> – This is a time-domain graph showing amplitude fluctuations. It helps visualize the intensity and temporal structure of the sound signal.</li>
+                <li><strong>Spectrogram</strong> – This is a time-frequency visualization that shows how the spectral density of the signal varies over time. This reveals pitch, harmonics, and changes in tone, making it useful for identifying patterns unique to alarms or bells.</li>
             </ul>
         </li>
     </ul>
@@ -208,8 +205,6 @@ if selected_page == "Dashboard":
 
     </div>
     """, unsafe_allow_html=True)
-
-
 
 elif selected_page == "Audio File-based Sound Classification":
     st.markdown("_Upload a .wav file of SCHOOL BELL or FIRE ALARM for classification._")
@@ -288,7 +283,9 @@ elif selected_page == "Audio File-based Sound Classification":
                     feature_names = ["duration", "centroid", "rolloff", "num_peaks"] + [f"mfcc_{i+1}" for i in range(13)]
                     feature_dict = dict(zip(feature_names, features.flatten()))
                     st.json(feature_dict)
-
+                    
+                os.remove(temp_audio_path)
+                
         except Exception as e:
             st.error(f"An error occurred while processing the audio file: {e}")
 
