@@ -155,38 +155,64 @@ def extract_features(file_path):
     
 #Page logic
 if selected_page == "Dashboard":
-    st.markdown("""
-    Welcome to the **Alarm Sound Classifier**! 
-    
-    This is a machine learning-powered web application built to identify and classify common emergency sounds, such as school bells and fire alarms. This tool can assist in developing smart monitoring systems, safety automation, and noise-based alert systems.
-    This app is designed for simplicity, speed, and clarity, which allow users to upload audio files or record live audio through a microphone, analyze the sound, and receive real-time classification results with supporting graphs.
-    
-    How it works:
-    1. Sound input options
-    Choose from two methods to submit your audio:
-    • Audio File-based sound classification - Upload a .wav file that contains the sound of a school bell or fire alarm.
-    • Mic-based sound classification - Record a sound in real time directly from your device’s microphone.
-    
-    2. Feature Extraction
-    Once an audio file is uploaded or recorded:
-    • The app processes the audio using Librosa - a powerful Python library for music and audio analysis.
-    • It extracts key audio features, including:
-           → MFCCs (Mel-Frequency Cepstral Coefficients) - This captures the timbral texture of the audio.
-           → Spectral Centroid - This represents the "center of mass" of the spectrum.
-           → Spectral Rolloff - This indicates the frequency below which a certain percentage of the total spectral energy lies.
-           → Durationb - This is the total length of the audio.
-           → Spectral Peaks - This is the number of significant frequency peaks in the signal.
-    
-    3. Sound Classification
-    • The extracted features are fed into a pre-trained Decision Tree Classifier.
-    • The classifier was trained to recognize the sound patterns of school bells and fire alarms.
-    • To help users understand and verify the classification, it generates interactive:
-            → Waveform plot - This displays the raw amplitude of the audio over time.
-            → Spectrogram - This displays how the frequency content of the audio changes over time.
+    st.markdown(
+        """
+        <div style='background-color: rgba(255, 255, 255, 0.6); padding: 20px; border-radius: 10px;'>
+            <h2 style='text-align: center;'>Alarm Sound Classifier</h2>
+            <p>Welcome to the <strong>Alarm Sound Classifier</strong>!</p>
+            <p>This is a machine learning-powered web application designed to identify and classify common emergency sounds, such as <strong>school bells</strong> and <strong>fire alarms</strong>. It can assist in developing smart monitoring systems, safety automation, and noise-based alert mechanisms.</p>
+            
+            <p>This app is built for <strong>simplicity</strong>, <strong>speed</strong>, and <strong>clarity</strong>. It allows users to:</p>
+            <ul>
+                <li>Upload audio files <em>(.wav format)</em></li>
+                <li>Record live audio using a microphone</li>
+                <li>Analyze and classify the sound in real time</li>
+                <li>View interactive graphs for verification</li>
+            </ul>
 
-    > Navigate to the tabs above to start uploading or recording your alarm sounds!
-    
-    """)
+            <h4>🔍 How it works:</h4>
+            <ol>
+                <li><strong>Sound Input Options</strong><br>
+                    Choose from two methods to submit your audio:
+                    <ul>
+                        <li><strong>Audio File-based Classification</strong> – Upload a .wav file that contains a school bell or fire alarm.</li>
+                        <li><strong>Mic-based Classification</strong> – Record a sound directly from your device’s microphone.</li>
+                    </ul>
+                </li>
+                <li><strong>Feature Extraction</strong><br>
+                    Once an audio file is uploaded or recorded, the app:
+                    <ul>
+                        <li>Processes the audio using <strong>Librosa</strong></li>
+                        <li>Extracts key audio features such as:
+                            <ul>
+                                <li><strong>MFCCs</strong> – Mel-Frequency Cepstral Coefficients, capturing the timbral texture of the sound</li>
+                                <li><strong>Spectral Centroid</strong> – The "center of mass" of the spectrum</li>
+                                <li><strong>Spectral Rolloff</strong> – The frequency below which most spectral energy lies</li>
+                                <li><strong>Duration</strong> – Total length of the audio</li>
+                                <li><strong>Spectral Peaks</strong> – Count of significant frequency peaks</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+                <li><strong>Sound Classification</strong><br>
+                    The extracted features are fed into a <strong>pre-trained Decision Tree Classifier</strong> that:
+                    <ul>
+                        <li>Recognizes the sound patterns of school bells and fire alarms</li>
+                        <li>Generates:
+                            <ul>
+                                <li><strong>Waveform Plot</strong> – Displays the raw amplitude over time</li>
+                                <li><strong>Spectrogram</strong> – Shows how frequencies change over time</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </li>
+            </ol>
+
+            <p style='margin-top: 20px;'><em>Use the navigation tabs above to start uploading or recording your alarm sounds!</em></p>
+        </div>
+        """, 
+        unsafe_allow_html=True
+    )
 
 elif selected_page == "Audio File-based Sound Classification":
     st.markdown("_Upload a .wav file of SCHOOL BELL or FIRE ALARM for classification._")
