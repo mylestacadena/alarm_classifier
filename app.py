@@ -155,23 +155,22 @@ def extract_features(file_path):
     
 if selected_page == "Dashboard":
     st.markdown("""
-    <div style='background-color: rgba(255, 255, 255, 0.6); padding: 20px; border-radius: 10px;'>
-        <p>Welcome to the <strong>Alarm Sound Classifier</strong>!</p>
-        <p>This is a machine learning-powered web application designed to identify and classify common emergency sounds, such as <strong>school bells</strong> and <strong>fire alarms</strong>. It can assist in developing smart monitoring systems, safety automation, and noise-based alert mechanisms.</p>
+    <div style='background-color: rgba(255, 255, 255, 0.6); padding: 25px; border-radius: 15px;'>
+        <h2>🔔 Welcome to the <strong>Alarm Sound Classifier</strong>!</h2>
+
+        <p>This is a machine learning-powered web application designed to identify and classify common emergency sounds, such as <strong>school bells</strong> and <strong>fire alarms</strong>.</p>
+
+        <p>It helps in smart monitoring systems, safety automation, and noise-based alert detection.</p>
+
+        <p><strong>Built for simplicity, speed, and clarity</strong>, this app allows you to:</p>
+        <ul>
+            <li>📂 Upload audio files (<code>.wav</code>)</li>
+            <li>🎙️ Record live audio from your microphone</li>
+            <li>📊 Analyze sounds and get real-time classification</li>
+            <li>📈 View waveform and spectrogram visualizations</li>
+        </ul>
     </div>
     """, unsafe_allow_html=True)
-
-    st.markdown("""
-    This machine learning-powered app identifies emergency sounds like **school bells** and **fire alarms**.  
-    It helps in smart monitoring systems, safety automation, and noise-based alert detection.
-
-    Built for **simplicity**, **speed**, and **clarity**, this app allows you to:
-
-    - 📂 Upload audio files (`.wav`)  
-    - 🎙️ Record live audio from your microphone  
-    - 📊 Analyze sounds and get real-time classification  
-    - 📈 View waveform and spectrogram visualizations  
-    """)
 
     with st.expander("🔍 How it Works", expanded=True):
         st.markdown("### 1️⃣ Sound Input Options")
@@ -209,6 +208,7 @@ if selected_page == "Dashboard":
 
     st.markdown("<hr>", unsafe_allow_html=True)
     st.markdown("📌 *Use the navigation tabs above to upload or record your alarm sounds!*")
+
 
 elif selected_page == "Audio File-based Sound Classification":
     st.markdown("_Upload a .wav file of SCHOOL BELL or FIRE ALARM for classification._")
