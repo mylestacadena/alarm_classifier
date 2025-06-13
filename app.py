@@ -181,10 +181,10 @@ if selected_page == "Dashboard":
     <p>The following acoustic features are extracted to help the model understand and differentiate between various types of alarm sounds:</p>
     <ul>
         <li><strong>MFCCs (Mel-Frequency Cepstral Coefficients)</strong> – This captures the short-term power spectrum of the sound based on human auditory perception. It’s especially useful in distinguishing timbre and is a key feature in audio classification tasks.</li>
-        <li><strong>Spectral Centroid</strong> – This indicates where the "center of gravity" of the frequency spectrum lies. A higher centroid typically implies a brighter sound.</li>
-        <li><strong>Spectral Rolloff</strong> – This represents the frequency below which a certain percentage (typically 85-95%) of the total spectral energy is contained. It helps in distinguishing between sharp and mellow sounds.</li>
+        <li><strong>Spectral centroid</strong> – This indicates where the "center of gravity" of the frequency spectrum lies. A higher centroid typically implies a brighter sound.</li>
+        <li><strong>Spectral rolloff</strong> – This represents the frequency below which a certain percentage (typically 85-95%) of the total spectral energy is contained. It helps in distinguishing between sharp and mellow sounds.</li>
         <li><strong>Duration</strong> – This measures the total length of the audio clip in seconds. Alarms and bells often have different length patterns which can be used to aid classification.</li>
-        <li><strong>Spectral Peaks</strong> – This counts the prominent frequency peaks to determine the harmonic structure and tonal content of the sound.</li>
+        <li><strong>Spectral peaks</strong> – This counts the prominent frequency peaks to determine the harmonic structure and tonal content of the sound.</li>
     </ul>
     
     <h4>3. Sound classification</h4>
@@ -193,8 +193,9 @@ if selected_page == "Dashboard":
         <li>Recognize the sound patterns of school bells and fire alarms to make accurate predictions</li>
         <li>Generate visualizations to help verify the classification, including:
             <ul>
-                <li><strong>Waveform Plot</strong> – This is a time-domain graph showing amplitude fluctuations. It helps visualize the intensity and temporal structure of the sound signal.</li>
+                <li><strong>Waveform plot</strong> – This is a time-domain graph showing amplitude fluctuations. It helps visualize the intensity and temporal structure of the sound signal.</li>
                 <li><strong>Spectrogram</strong> – This is a time-frequency visualization that shows how the spectral density of the signal varies over time. This reveals pitch, harmonics, and changes in tone, making it useful for identifying patterns unique to alarms or bells.</li>
+                <li>strong>Prediction confidence</strong> – After the classification is complete, a bar chart is shown to represent the confidence levels of the model's prediction. This helps users see how certain the model is about its decision.</li>
             </ul>
         </li>
     </ul>
